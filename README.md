@@ -16,6 +16,8 @@
 
 ![Animated preview of the Solvique application walkthrough](./assets/solvique-overview-preview.gif)
 
+> 📹 [Click here to watch the full HD video (demo.mp4)](./assets/Solvique-720p.mp4)
+
 ---
 
 ## 🎯 1. Project Goal & Business Value
