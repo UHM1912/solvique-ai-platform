@@ -1,0 +1,130 @@
+﻿<div class="app-shell">
+    <!-- Sidebar -->
+    <app-sidebar
+        [isCollapsed]="!isMobileView && isCollapsed"
+        [isMobile]="isMobileView"
+        [mobileOpen]="mobileOpen"
+        [chats]="sidebarChats"
+        [isLoading]="isLoadingSessions"
+        (mobileOpenChange)="mobileOpen = $event"
+        (requestToggle)="toggleCollapseRequest()"
+        (newChat)="onNewChat()"
+        (selectChatEvent)="onSelectChat($event)"
+        (deleteChatEvent)="handleDeleteChat($event)"
+        (searchChange)="searchTerm = $event">
+    </app-sidebar>
+
+    <!-- Backdrop for mobile -->
+    <div class="mobile-backdrop"
+        *ngIf="isMobileView && mobileOpen"
+        (click)="onBackdropClick()">
+    </div>
+
+    <nav class="workspace-rail" aria-label="Solvique workspaces">
+        <div class="rail-brand"><img src="assets/solvique-icon.png" alt="Solvique"></div>
+        <div class="rail-group">
+            <span class="rail-label">WORKSPACE</span>
+            <button class="rail-link" [class.active]="activeView === 'assistant'" (click)="setView('assistant')" aria-label="Assistant" title="Assistant"><lucide-icon [img]="MessageSquare" [size]="18"></lucide-icon><span>Assistant</span></button>
+            <button class="rail-link" [class.active]="activeView === 'studio'" (click)="setView('studio')" aria-label="Data Studio" title="Data Studio"><lucide-icon [img]="BarChart3" [size]="18"></lucide-icon><span>Data Studio</span><span *ngIf="datasetCount > 0" class="rail-count">{{ datasetCount }}</span></button>
+            <button class="rail-link" [class.active]="activeView === 'reports'" (click)="setView('reports')" aria-label="Report Center" title="Report Center"><lucide-icon [img]="FileText" [size]="18"></lucide-icon><span>Report Center</span></button>
+            <button class="rail-link rail-new" (click)="onNewChat()" aria-label="New analysis" title="New analysis"><lucide-icon [img]="Plus" [size]="18"></lucide-icon><span>New analysis</span></button>
+        </div>
+        <div class="rail-bottom">
+            <button class="rail-link rail-history" (click)="toggleCollapseRequest()" aria-label="Open conversation history" title="Open conversation history">
+                <lucide-icon [img]="History" [size]="18"></lucide-icon><span>History</span>
+            </button>
+            <span class="status-led"></span><span>Connected</span>
+        </div>
+    </nav>
+
+    <!-- Main Workspace Area -->
+    <main class="main-area" [class.sidebar-collapsed]="isCollapsed && !isMobileView">
+        <div class="ambient-field" aria-hidden="true">
+            <svg viewBox="0 0 1440 850" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="meshDotsCyan" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".8" fill="#16B8B0"/></pattern>
+                    <pattern id="meshDotsBlue" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".8" fill="#21A5EC"/></pattern>
+                    <mask id="meshRibbonOne" maskUnits="userSpaceOnUse" x="0" y="0" width="1440" height="850"><rect width="1440" height="850" fill="black"/><path d="M-80 280 C130 100 285 155 420 335 S680 460 815 220 S1100 75 1510 260" fill="none" stroke="white" stroke-width="190" stroke-linecap="round"/></mask>
+                    <mask id="meshRibbonTwo" maskUnits="userSpaceOnUse" x="0" y="0" width="1440" height="850"><rect width="1440" height="850" fill="black"/><path d="M-60 690 C175 480 335 765 510 600 S810 415 990 630 S1280 715 1510 495" fill="none" stroke="white" stroke-width="150" stroke-linecap="round"/></mask>
+                </defs>
+                <g class="mesh-flow mesh-flow-cyan"><rect width="1440" height="850" fill="url(#meshDotsCyan)" mask="url(#meshRibbonOne)"/></g>
+                <g class="mesh-flow mesh-flow-blue"><rect width="1440" height="850" fill="url(#meshDotsBlue)" mask="url(#meshRibbonTwo)"/></g>
+            </svg>
+            <i class="field-light light-one"></i><i class="field-light light-two"></i><i class="field-light light-three"></i>
+        </div>
+
+        <!-- Executive Navigation Header -->
+        <header class="workspace-header">
+            <div class="context-heading"><span class="eyebrow">SOLVIQUE INTELLIGENCE</span><h1>{{ activeView === 'assistant' ? 'Ask your data' : activeView === 'studio' ? 'Data Studio' : 'Report Center' }}</h1></div>
+
+            <!-- Right: Session Title & DOCX Export Action -->
+            <div class="workspace-actions">
+                <div class="active-session-title" [title]="currentChat?.title || 'Current Inquiry'">
+                    {{ currentChat?.title || 'New Analysis' }}
+                </div>
+                <button
+                    class="quick-export-btn"
+                    [disabled]="!canOpenReport() || isReportLoading"
+                    (click)="downloadReportDocx()"
+                    title="Download Executive Report (.docx)">
+                    <lucide-icon [img]="FileText" [size]="15" [class.spin]="isReportLoading"></lucide-icon>
+                    <span class="btn-text">{{ isReportLoading ? 'Preparing...' : 'Export DOCX' }}</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- View 1: Conversational Assistant -->
+        <div class="view-viewport view-assistant" *ngIf="activeView === 'assistant'">
+            <div class="chat-wrapper">
+                <app-chat #chatComp
+                    [messages]="currentChat?.messages || []"
+                    [conversationId]="currentChat?.id"
+                    [isTyping]="currentChat?.isTyping || false"
+                    [scrollOnNewMessage]="isAppendingNewMessage"
+                    (suggestionSelected)="onSuggestionSelected($event)">
+                </app-chat>
+
+                <ng-container *ngIf="chatComponent">
+                    <button *ngIf="chatComponent?.showScrollToBottom"
+                        [@fade]
+                        class="scroll-to-bottom-btn"
+                        (click)="chatComponent.scrollToBottom()"
+                        aria-label="Scroll to bottom"
+                        id="scrollToBottomBtn">
+                        <lucide-icon [img]="ArrowDown" [size]="18"></lucide-icon>
+                    </button>
+                </ng-container>
+            </div>
+
+            <app-chat-input class="chat-input"
+                [isLoading]="isLoadingReply"
+                [prefillText]="prefillText"
+                (send)="onMessageSend($event)">
+            </app-chat-input>
+        </div>
+
+        <!-- View 2: Data Studio Workspace -->
+        <div class="view-viewport view-studio" *ngIf="activeView === 'studio'">
+            <app-data-studio
+                [messages]="currentChat?.messages || []"
+                [conversationId]="currentChat?.id"
+                (suggestionSelected)="onSuggestionSelected($event)">
+            </app-data-studio>
+        </div>
+
+        <!-- View 3: Executive Report Center -->
+        <div class="view-viewport view-reports" *ngIf="activeView === 'reports'">
+            <app-report-center
+                [conversationId]="currentChat?.id"
+                [conversationTitle]="currentChat?.title"
+                [messages]="currentChat?.messages || []"
+                (requestAssistant)="setView('assistant')">
+            </app-report-center>
+        </div>
+
+    </main>
+
+    <!-- Global Loading Overlay -->
+    <app-loading-overlay [show]="isWaitingForApi"></app-loading-overlay>
+</div>
+

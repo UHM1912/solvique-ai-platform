@@ -1,0 +1,97 @@
+{
+  "model_id": "order_forecasting",
+  "task": "forecasting",
+  "domain": "demand planning",
+  "description": "Forecasts daily order counts for a given number of future days. Trained on delivered orders from Oct 2016 to Aug 2018 using Facebook Prophet with yearly and weekly seasonality.",
+  "pkl_path": "./saved_models/prophet_model.pkl",
+  "version": "3.0.0",
+  "trained_on": "2026-03-30",
+  "training_rows": 606,
+  "accuracy": {
+    "mae_daily": 49.39,
+    "rmse_daily": 63.48,
+    "model": "Prophet",
+    "backup": "ARIMA \u2014 kept as fallback",
+    "note": "Prophet outperforms ARIMA at both daily and monthly level"
+  },
+  "feature_schema": {
+    "model_type": "time_series",
+    "input_type": "horizon_only",
+    "top_k_features": [
+      "horizon_days"
+    ],
+    "k": 1,
+    "required_input": "horizon_days \u2014 number of days to forecast ahead",
+    "data_source": "./csv/orders_rows.csv",
+    "data_filter": "order_status == delivered",
+    "seasonality": [
+      "yearly",
+      "weekly"
+    ],
+    "target": "order_count",
+    "output_type": "daily time series",
+    "output_fields": [
+      "date",
+      "yhat",
+      "yhat_lower",
+      "yhat_upper"
+    ],
+    "supports_aggregation": [
+      "daily",
+      "weekly",
+      "monthly"
+    ],
+    "col_order": [
+      "horizon_days"
+    ],
+    "horizon_conversion": {
+      "note": "Always convert to days before passing to model",
+      "1 week": 7,
+      "2 weeks": 14,
+      "1 month": 30,
+      "2 months": 60,
+      "3 months": 90,
+      "6 months": 180
+    }
+  },
+  "artifacts": {
+    "prophet_model": "./saved_models/prophet_model.pkl",
+    "arima_backup": "./saved_models/arima_model.pkl",
+    "imputer_stats": "./registry/order_forecasting/artifacts/imputer_stats.json"
+  },
+  "llm_hints": {
+    "trigger_phrases": [
+      "forecast orders",
+      "predict orders",
+      "how many orders",
+      "next N days orders",
+      "next N weeks orders",
+      "order forecast",
+      "demand forecast",
+      "future orders",
+      "order volume"
+    ],
+    "entity_map": {
+      "horizon_days": [
+        "next",
+        "days",
+        "weeks",
+        "months",
+        "ahead",
+        "forecast period",
+        "coming"
+      ]
+    },
+    "example_query": "Forecast orders for the next 30 days.",
+    "ambiguous_fallback": "Are you asking about forecasting future order volumes? If yes, how many days ahead?"
+  },
+  "output_config": {
+    "return_probabilities": false,
+    "return_confidence": true,
+    "prediction_interval": true,
+    "explain_output": true,
+    "units": "order count per day",
+    "supports_aggregation": true,
+    "response_template": "Forecast for next {n} days: {total} total orders expected. Peak: {peak_date} with {peak_value} orders/day. Confidence band: {lower}\u2013{upper} orders/day."
+  }
+}

@@ -1,0 +1,474 @@
+<div class="chat-container" #scrollContainer (scroll)="onScroll()">
+
+    <!-- Branded command surface -->
+    <section class="hero" *ngIf="messages.length === 0 && !isTyping" aria-labelledby="welcome-title">
+        <div class="hero-content">
+            <div class="hero-kicker"><span class="hero-kicker-dot"></span> ENTERPRISE INTELLIGENCE</div>
+            <h1 class="hero-title" id="welcome-title">Turn your data<br><em>into decisions.</em></h1>
+            <p class="hero-sub">Ask a business question. Explore the signal behind it.</p>
+            <div class="suggestion-grid" aria-label="Suggested analytical questions">
+                <button class="suggestion-card" (click)="onSuggestionClick('What is the average payment value for each payment type? Round to 2 decimal places and sort by highest average first.')">
+                    <span class="suggestion-icon">&#8599;</span><span class="suggestion-copy"><small>DATABASE ANALYSIS</small>Average payment value by payment type</span>
+                </button>
+                <button class="suggestion-card" (click)="onSuggestionClick('A product weighing 300g, priced at 150 BRL - Predict what category is it?')">
+                    <span class="suggestion-icon">&#8599;</span><span class="suggestion-copy"><small>FORECAST & PREDICT</small>Predict a product category from its attributes</span>
+                </button>
+                <button class="suggestion-card" (click)="onSuggestionClick('What are the key benefits of the Inflation Reduction Act for renewable energy?')">
+                    <span class="suggestion-icon">&#8599;</span><span class="suggestion-copy"><small>DOCUMENT INSIGHT</small>Find policy insights for renewable energy</span>
+                </button>
+            </div>
+            <div class="hero-footnote"><span class="hero-rule"></span> YOUR DATA, READY FOR A BETTER QUESTION</div>
+        </div>
+        <aside class="capability-stage" aria-label="Illustrative product capability previews">
+            <div class="preview-glow"></div>
+            <article class="capability-card capability-chart" aria-label="Illustrative chart interface preview, not live data">
+                <div class="capability-card-head"><span class="live-dot"></span><span>INTERFACE PREVIEW</span><small>ILLUSTRATIVE</small></div>
+                <div class="capability-title">Analytical overview</div>
+                <div class="capability-subtitle">Charts appear here when your analysis returns data</div>
+                <div class="capability-chart-area">
+                    <div class="capability-gridlines"><i></i><i></i><i></i><i></i></div>
+                    <svg viewBox="0 0 360 135" preserveAspectRatio="none" aria-hidden="true">
+                        <defs><linearGradient id="assistantFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#21A5EC" stop-opacity=".28"/><stop offset="1" stop-color="#21A5EC" stop-opacity="0"/></linearGradient></defs>
+                        <path class="capability-fill" d="M0 106 C28 98 31 76 65 82 S99 103 129 66 S173 81 201 53 S248 76 274 33 S325 51 360 16 L360 135 L0 135Z"/>
+                        <path class="capability-line" d="M0 106 C28 98 31 76 65 82 S99 103 129 66 S173 81 201 53 S248 76 274 33 S325 51 360 16"/>
+                    </svg>
+                </div>
+                <div class="capability-card-foot"><span>Database analysis</span><span>Forecasting</span><span>Document insight</span></div>
+            </article>
+            <article class="capability-card capability-stack" aria-label="Illustrative analysis workflow">
+                <div class="stack-icon">01</div><div><strong>Question</strong><small>Natural language</small></div><span class="stack-arrow">&#8594;</span>
+                <div class="stack-icon">02</div><div><strong>Evidence</strong><small>Grounded results</small></div><span class="stack-arrow">&#8594;</span>
+                <div class="stack-icon">03</div><div><strong>Decision</strong><small>Clear next steps</small></div><span class="stack-end">SOLVIQUE</span>
+            </article>
+            <div class="capability-orbit orbit-one"></div><div class="capability-orbit orbit-two"></div>
+        </aside>
+    </section>
+
+    <!-- Messages -->
+    <div class="messages-area" *ngIf="messages.length > 0">
+        <div *ngFor="let msg of messages; trackBy: trackMsg"
+            class="message-row"
+            [class.user-message]="msg.sender === 'user'"
+            [class.assistant-message]="msg.sender === 'assistant'">
+
+            <!-- Avatar -->
+            <div class="avatar" [class.user-avatar]="msg.sender === 'user'" [class.bot-avatar]="msg.sender === 'assistant'">
+                <lucide-icon *ngIf="msg.sender === 'user'" [img]="User" [size]="18"></lucide-icon>
+                <lucide-icon *ngIf="msg.sender === 'assistant'" [img]="Bot" [size]="18"></lucide-icon>
+            </div>
+
+            <!-- Message content -->
+            <div class="message-content">
+
+                <!-- Tool Badge -->
+                <div *ngIf="shouldShowToolBadge(msg)" class="tool-badge-row">
+                    <span class="tool-badge" [ngClass]="getToolBadge(msg.tool).cssClass">
+                        {{ getToolBadge(msg.tool).label }}
+                    </span>
+                </div>
+
+                <!-- Error card -->
+                <div *ngIf="msg.error" class="error-card">
+                    <lucide-icon [img]="AlertCircle" [size]="16"></lucide-icon>
+                    <span>{{ msg.error }}</span>
+                </div>
+
+                <ng-container *ngIf="msg.sender === 'assistant'; else userMessageTemplate">
+                    <ng-container [ngSwitch]="getNormalizedTool(msg.tool)">
+                        <ng-container *ngSwitchCase="'sql_tool'">
+                            <ng-container *ngTemplateOutlet="sqlToolTemplate; context: { $implicit: msg }"></ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'ml_tool'">
+                            <ng-container *ngTemplateOutlet="mlToolTemplate; context: { $implicit: msg }"></ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'rag_tool'">
+                            <ng-container *ngTemplateOutlet="ragToolTemplate; context: { $implicit: msg }"></ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'multi_tool'">
+                            <ng-container *ngTemplateOutlet="multiToolTemplate; context: { $implicit: msg }"></ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'visualize'">
+                            <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: msg }"></ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <ng-container *ngTemplateOutlet="defaultAssistantTemplate; context: { $implicit: msg }"></ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+
+                <ng-template #userMessageTemplate>
+                    <ng-container *ngTemplateOutlet="messageTextTemplate; context: { $implicit: msg }"></ng-container>
+                </ng-template>
+
+                <!-- Typing indicator -->
+                <div *ngIf="msg.isTyping" class="typing-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Templates ────────────────────────────────────────────────────── -->
+
+    <ng-template #messageTextTemplate let-msg>
+        <div class="message-text" *ngIf="getMessageText(msg)"
+            [innerHTML]="getMessageText(msg) | marked"></div>
+    </ng-template>
+
+    <ng-template #sqlToolTemplate let-msg>
+        <ng-container *ngTemplateOutlet="messageTextTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="sqlQueryTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="citationTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="webSourceTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: msg }"></ng-container>
+    </ng-template>
+
+    <ng-template #mlToolTemplate let-msg>
+        <ng-container *ngTemplateOutlet="messageTextTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: msg }"></ng-container>
+    </ng-template>
+
+    <ng-template #ragToolTemplate let-msg>
+        <ng-container *ngTemplateOutlet="messageTextTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="citationTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="webSourceTemplate; context: { $implicit: msg }"></ng-container>
+    </ng-template>
+
+    <ng-template #defaultAssistantTemplate let-msg>
+        <ng-container *ngTemplateOutlet="messageTextTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="sqlQueryTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="citationTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: msg }"></ng-container>
+        <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: msg }"></ng-container>
+    </ng-template>
+    <ng-template #multiToolTemplate let-msg>
+        <div class="tool-badge-row multi-tool-badge-row" *ngIf="getMultiToolResults(msg).length > 0">
+            <ng-container *ngFor="let patch of getMultiToolResults(msg)">
+                <span class="tool-badge" [ngClass]="getToolBadge(patch.tool).cssClass">
+                    {{ getToolBadge(patch.tool).label }}
+                </span>
+            </ng-container>
+        </div>
+
+        <div *ngIf="getMessageText(msg)" class="multi-tool-summary">
+            <div class="multi-tool-summary-label">Unified Summary</div>
+            <div class="message-text" [innerHTML]="getMessageText(msg) | marked"></div>
+        </div>
+
+        <div class="multi-tool-blocks" *ngIf="getMultiToolResults(msg).length > 0">
+            <ng-container *ngFor="let patch of getMultiToolResults(msg); let i = index">
+                <ng-container *ngIf="makeToolResultMessage(patch, msg, i) as patchMsg">
+                    <section class="multi-tool-block" [ngClass]="'multi-tool-block-' + getNormalizedTool(patchMsg.tool)">
+                        <div class="multi-tool-block-header">
+                            <div class="multi-tool-block-title-wrap">
+                                <span class="tool-badge" [ngClass]="getToolBadge(patch.tool).cssClass">
+                                    {{ getToolBadge(patch.tool).label }}
+                                </span>
+                                <h4 class="multi-tool-block-title">{{ getMultiPatchLabel(patchMsg.tool) }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="multi-tool-feature-strip" *ngIf="getMultiToolFeatures(patchMsg).length > 0">
+                            <span class="multi-tool-feature-label">Includes</span>
+                            <span class="multi-tool-feature-chip" *ngFor="let feature of getMultiToolFeatures(patchMsg)">
+                                {{ feature }}
+                            </span>
+                        </div>
+
+                        <ng-container *ngTemplateOutlet="messageTextTemplate; context: { $implicit: patchMsg }"></ng-container>
+                        <div *ngIf="patchMsg.error && !getMessageText(patchMsg)" class="error-card">
+                            <lucide-icon [img]="AlertCircle" [size]="16"></lucide-icon>
+                            <span>{{ patchMsg.error }}</span>
+                        </div>
+
+                        <ng-container [ngSwitch]="getNormalizedTool(patchMsg.tool)">
+                            <ng-container *ngSwitchCase="'sql_tool'">
+                                <ng-container *ngTemplateOutlet="sqlQueryTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="citationTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="webSourceTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: patchMsg }"></ng-container>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'ml_tool'">
+                                <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: patchMsg }"></ng-container>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'rag_tool'">
+                                <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="citationTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="webSourceTemplate; context: { $implicit: patchMsg }"></ng-container>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <ng-container *ngTemplateOutlet="sqlQueryTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="tableTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="citationTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="webSourceTemplate; context: { $implicit: patchMsg }"></ng-container>
+                                <ng-container *ngTemplateOutlet="visualizationTemplate; context: { $implicit: patchMsg }"></ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </section>
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-template>
+    <!-- Visualization -->
+    <ng-template #visualizationTemplate let-msg>
+        <div *ngIf="canShowVisualizationButton(msg) || hasSavedVisualization(msg) || msg.visualizationLoading || msg.visualizationError || msg.visualizationSummary" class="viz-section">
+            <div *ngIf="canShowVisualizationButton(msg) && !hasSavedVisualization(msg) && !msg.visualizationLoading" class="viz-actions on-demand-viz">
+                <span class="viz-picker-label">Visualize data:</span>
+                <div class="viz-option-chips">
+                    <button *ngFor="let option of getCandidateVisualizationOptions(msg)"
+                            type="button"
+                            class="viz-chip-btn"
+                            [disabled]="msg.visualizationLoading"
+                            (click)="onSelectInitialChartType(msg, option)"
+                            [attr.title]="option.description">
+                        <lucide-icon [img]="getChartTypeIcon(option)" [size]="15"></lucide-icon>
+                        <span>{{ option.label }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <div *ngIf="msg.visualizationLoading && !msg.visualizationChartId" class="viz-loading-state">
+                <div class="viz-spinner"></div>
+                <span>Generating chart...</span>
+            </div>
+
+            <div *ngIf="msg.visualizationError" class="error-card viz-error">
+                <lucide-icon [img]="AlertCircle" [size]="16"></lucide-icon>
+                <span>{{ msg.visualizationError }}</span>
+            </div>
+
+            <div *ngIf="msg.visualizationSummary" class="viz-summary"
+                [innerHTML]="getVisualizationSummaryForDisplay(msg) | marked">
+            </div>
+
+            <div *ngIf="msg.visualizationLoading || msg.visualizationChartId" class="viz-chart-card">
+                <div *ngIf="msg.visualizationChartId && !msg.visualizationLoading" class="viz-chart-toolbar">
+                    <div *ngIf="getChartSwitcherOptions(msg).length > 0" class="viz-chart-type-icons" aria-label="Chart type options">
+                        <button
+                            *ngFor="let option of getChartSwitcherOptions(msg)"
+                            type="button"
+                            class="viz-chart-type-btn"
+                            [attr.aria-label]="option.description || getVisualizationOptionLabel(option)"
+                            [attr.data-tooltip]="option.description || getVisualizationOptionLabel(option)"
+                            [class.is-active]="isVisualizationOptionSelected(msg, option)"
+                            [disabled]="msg.visualizationLoading"
+                            (click)="onSelectVisualizationOption(msg, option)">
+                            <lucide-icon [img]="getChartTypeIcon(option)" [size]="17"></lucide-icon>
+                        </button>
+                    </div>
+                    <button type="button" class="viz-download-btn" (click)="downloadVisualization(msg)" aria-label="Download visualization">
+                        <lucide-icon [img]="Download" [size]="16"></lucide-icon>
+                        <span>Download PNG</span>
+                    </button>
+                </div>
+                <div class="viz-chart-shell">
+                    <div #vizChartHost class="viz-chart" [id]="getVisualizationChartId(msg)"></div>
+                </div>
+            </div>
+
+            <div *ngIf="hasVisualizationStats(msg)" class="viz-stats-shell">
+                <div class="viz-stats-title">Statistical Summary</div>
+                <div class="viz-stats-grid">
+                    <div *ngFor="let stat of getVisualizationStats(msg)" class="viz-stat-card">
+                        <div class="viz-stat-label">{{ stat.label }}</div>
+                        <div class="viz-stat-value">{{ stat.value }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="msg.visualizationSampleMessage || (msg.visualizationSampleData && msg.visualizationSampleData.length > 0)" class="viz-sample-shell">
+                <div *ngIf="msg.visualizationSampleMessage" class="viz-sample-message">
+                    {{ msg.visualizationSampleMessage }}
+                </div>
+                <div *ngIf="msg.visualizationSampleData && msg.visualizationSampleData.length > 0" class="table-scroll viz-sample-table-scroll">
+                    <table class="data-table viz-sample-table">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let col of getVisualizationSampleColumns(msg)">{{ col }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of msg.visualizationSampleData">
+                                <td *ngFor="let col of getVisualizationSampleColumns(msg)">{{ row[col] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- SQL Query -->
+    <ng-template #sqlQueryTemplate let-msg>
+        <div *ngIf="msg.sqlQuery" class="expander">
+            <button class="expander-toggle" (click)="toggleSql(msg.id)" [id]="'sql-toggle-' + msg.id">
+                <span>View SQL Query</span>
+                <lucide-icon [img]="expandedSql.has(msg.id) ? ChevronUp : ChevronDown" [size]="16"></lucide-icon>
+            </button>
+            <div class="expander-body" *ngIf="expandedSql.has(msg.id)">
+                <div class="sql-toolbar">
+                    <span class="sql-toolbar-label">Generated SQL</span>
+                    <button
+                        type="button"
+                        class="sql-copy-btn"
+                        [attr.aria-label]="copiedSqlMessageId === msg.id ? 'SQL copied' : 'Copy SQL query'"
+                        [attr.title]="copiedSqlMessageId === msg.id ? 'Copied' : 'Copy SQL query'"
+                        (click)="copySqlQuery(msg)">
+                        <lucide-icon [img]="copiedSqlMessageId === msg.id ? Check : Copy" [size]="15"></lucide-icon>
+                    </button>
+                </div>
+                <pre class="sql-code"><code [innerHTML]="highlightSqlQuery(msg.sqlQuery)"></code></pre>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Citations — documents only -->
+    <ng-template #citationTemplate let-msg>
+        <div *ngIf="hasDocCitations(msg)" class="expander">
+            <button class="expander-toggle" (click)="toggleCitations(msg.id)" [id]="'citations-toggle-' + msg.id">
+                <span>View Citations ({{ getDocCitations(msg).length }})</span>
+                <lucide-icon [img]="expandedCitations.has(msg.id) ? ChevronUp : ChevronDown" [size]="16"></lucide-icon>
+            </button>
+            <div class="expander-body expander-body-padded citation-expander-body" *ngIf="expandedCitations.has(msg.id)">
+                <div class="citation-list">
+                    <div *ngFor="let cit of getDocCitations(msg); let idx = index" class="citation-card">
+                        <div class="citation-header">
+                            <div class="citation-meta">
+                                <span class="citation-rank">{{ getCitationRankLabel(cit, idx) }}</span>
+                                <span class="citation-heading">{{ getCitationHeading(cit, idx) }}</span>
+                                <span *ngIf="getCitationFileLabel(cit) as fileLabel" class="citation-source">
+                                    {{ fileLabel }}
+                                </span>
+                            </div>
+                            <span *ngIf="formatCitationScore(cit.score) as scoreLabel" class="citation-score">
+                                {{ scoreLabel }}
+                            </span>
+                        </div>
+                        <div *ngIf="!isCitationTable(cit)" class="citation-text"
+                            [innerHTML]="getCitationText(cit) | marked"></div>
+                        <div *ngIf="isCitationTable(cit)" class="table-scroll citation-table-scroll">
+                            <table class="data-table citation-table">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let col of getCitationTableHeaders(cit)">{{ col }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let row of getCitationTableBodyRows(cit)">
+                                        <td *ngFor="let cell of row" [innerHTML]="cell | marked"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Sources — web only -->
+    <ng-template #webSourceTemplate let-msg>
+        <div *ngIf="hasWebCitations(msg)" class="expander">
+            <button class="expander-toggle" (click)="toggleWebCitations(msg.id)" [id]="'web-citations-toggle-' + msg.id">
+                <span>View Sources ({{ getWebCitations(msg).length }})</span>
+                <lucide-icon [img]="expandedWebCitations.has(msg.id) ? ChevronUp : ChevronDown" [size]="16"></lucide-icon>
+            </button>
+            <div class="expander-body expander-body-padded citation-expander-body" *ngIf="expandedWebCitations.has(msg.id)">
+                <div class="citation-list">
+                    <div *ngFor="let cit of getWebCitations(msg); let idx = index" class="citation-card">
+                        <div class="citation-header">
+                            <div class="citation-meta">
+                                <span class="citation-rank">{{ getCitationRankLabel(cit, idx) }}</span>
+                                <span class="citation-heading">{{ getCitationHeading(cit, idx) }}</span>
+                                <span *ngIf="getCitationFileLabel(cit) as fileLabel" class="web-source-domain">
+                                    {{ fileLabel }}
+                                </span>
+                            </div>
+                            <span *ngIf="formatCitationScore(cit.score) as scoreLabel" class="citation-score">
+                                {{ scoreLabel }}
+                            </span>
+                        </div>
+                        <div class="web-source-body">
+                            <div class="web-source-meta">
+                                <span *ngIf="getWebCitationPublishedDate(cit) as publishedDate" class="web-source-date">
+                                    {{ publishedDate }}
+                                </span>
+                                <a *ngIf="getWebCitationUrl(cit) as sourceUrl"
+                                    class="web-source-link"
+                                    [href]="sourceUrl"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    Open source
+                                </a>
+                            </div>
+                            <p class="web-source-snippet">{{ getWebCitationSnippet(cit) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Table -->
+    <ng-template #tableTemplate let-msg>
+        <div *ngIf="hasDisplayTables(msg)" class="expander">
+            <button class="expander-toggle" (click)="toggleTable(msg.id)" [id]="'table-toggle-' + msg.id">
+                <span>{{ getTableExpanderLabel(msg) }}</span>
+                <lucide-icon [img]="expandedTable.has(msg.id) ? ChevronUp : ChevronDown" [size]="16"></lucide-icon>
+            </button>
+            <div class="expander-body" *ngIf="expandedTable.has(msg.id)">
+                <ng-container *ngIf="getRenderableTables(msg) as parsedTables">
+                    <div *ngIf="parsedTables.length > 0" class="expander-body-padded rag-table-list">
+                        <div *ngFor="let table of parsedTables" class="rag-table-card">
+                            <div class="rag-table-header">
+                                <div class="rag-table-meta">
+                                    <span class="rag-table-title">{{ table.title }}</span>
+                                    <span *ngIf="table.source" class="rag-table-source">{{ table.source }}</span>
+                                </div>
+                                <span class="rag-table-count">{{ table.rows.length }} rows</span>
+                            </div>
+                            <div class="table-scroll">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th *ngFor="let col of table.headers">{{ col }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let row of table.rows">
+                                            <td *ngFor="let cell of row" [innerHTML]="cell | marked"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="getTabularResults(msg) as tableRows">
+                    <div *ngIf="tableRows.length > 0" class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th *ngFor="let col of getColumns(tableRows)">{{ getColumnLabel(col) }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of tableRows">
+                                    <td *ngFor="let col of getColumns(tableRows)">{{ row[col] }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </ng-template>
+
+</div>

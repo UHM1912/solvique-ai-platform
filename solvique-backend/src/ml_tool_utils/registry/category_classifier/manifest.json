@@ -1,0 +1,110 @@
+{
+  "model_id": "category_classifier",
+  "task": "classification",
+  "domain": "product categorisation",
+  "description": "Predicts the product category (top 10) from physical product properties \u2014 weight, volume, price, freight, and value density. Designed for auto-tagging unlabelled product listings.",
+  "pkl_path": "./saved_models/category_classifier.pkl",
+  "version": "1.0.0",
+  "trained_on": "2026-04-06",
+  "training_rows": 98665,
+  "accuracy": {
+    "overall_accuracy": 0.8117,
+    "weighted_f1": 0.8106,
+    "macro_f1": 0.8059,
+    "note": "10-class multiclass task \u2014 best: relogios_presentes (F1=0.904), telefonia (F1=0.888). Weakest: automotivo (F1=0.713)."
+  },
+  "feature_schema": {
+    "all_features": [
+      "price",
+      "freight_value",
+      "freight_ratio",
+      "product_weight_g",
+      "volume_cm3",
+      "price_per_gram"
+    ],
+    "top_k_features": [
+      "volume_cm3",
+      "price"
+    ],
+    "k": 3,
+    "feature_types": {
+      "price": "numeric",
+      "freight_value": "numeric",
+      "freight_ratio": "numeric_engineered",
+      "product_weight_g": "numeric",
+      "volume_cm3": "numeric_engineered",
+      "price_per_gram": "numeric_engineered"
+    },
+    "engineered": {
+      "volume_cm3": "product_length_cm * product_height_cm * product_width_cm",
+      "freight_ratio": "freight_value / price  (price replaced with NaN if 0)",
+      "price_per_gram": "price / product_weight_g  (weight replaced with NaN if 0)"
+    },
+    "target": "product_category_name",
+    "output_classes": [
+      "automotivo",
+      "beleza_saude",
+      "brinquedos",
+      "cama_mesa_banho",
+      "esporte_lazer",
+      "informatica_acessorios",
+      "moveis_decoracao",
+      "relogios_presentes",
+      "telefonia",
+      "utilidades_domesticas"
+    ],
+    "col_order": [
+      "price",
+      "freight_value",
+      "freight_ratio",
+      "product_weight_g",
+      "volume_cm3",
+      "price_per_gram"
+    ]
+  },
+  "artifacts": {
+    "label_encoder": "./saved_models/category_label_encoder.pkl",
+    "scaler": "./saved_models/category_scaler.pkl",
+    "imputer_stats": "./registry/category_classifier/artifacts/imputer_stats.json"
+  },
+  "llm_hints": {
+    "trigger_phrases": [
+      "product category",
+      "what category is this product",
+      "classify this product",
+      "predict category",
+      "auto tag product",
+      "which category does this belong to",
+      "what type of product is this"
+    ],
+    "entity_map": {
+      "price": [
+        "price",
+        "item price",
+        "product price",
+        "cost",
+        "worth"
+      ],
+      "volume_cm3": [
+        "volume",
+        "size",
+        "dimensions",
+        "how big"
+      ],
+      "price_per_gram": [
+        "price per gram",
+        "value density",
+        "cost per gram"
+      ]
+    },
+    "example_query": "A product weighing 300g, volume 9000cm\u00b3, priced at 150 BRL \u2014 what category is it?",
+    "ambiguous_fallback": "Are you asking me to predict the product category from its physical specs?"
+  },
+  "output_config": {
+    "return_probabilities": true,
+    "return_confidence": false,
+    "explain_output": true,
+    "units": "product category label",
+    "response_template": "The predicted product category is {predicted_class}."
+  }
+}

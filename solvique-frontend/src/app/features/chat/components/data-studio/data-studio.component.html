@@ -1,0 +1,193 @@
+<div class="data-studio-container">
+
+    <!-- Onboarding state: previews are illustrative and contain no live business data. -->
+    <section *ngIf="datasets.length === 0" class="studio-empty-state" aria-labelledby="studio-welcome-title">
+        <div class="studio-intro">
+            <div class="studio-copy">
+                <div class="studio-kicker"><span class="studio-kicker-dot"></span> EXPLORE YOUR RESULTS</div>
+                <h2 class="empty-title" id="studio-welcome-title">A clearer view<br><em>of your data.</em></h2>
+                <p class="empty-desc">Turn an Assistant query into a dataset you can inspect, visualize, filter, and export. Results stay grounded in the active conversation.</p>
+                <div class="studio-steps" aria-label="How Data Studio works">
+                    <div class="studio-step"><span>01</span><strong>Ask</strong><small>Query data or forecast in Assistant</small></div>
+                    <div class="step-connector"></div>
+                    <div class="studio-step"><span>02</span><strong>Explore</strong><small>Review the returned rows and chart</small></div>
+                    <div class="step-connector"></div>
+                    <div class="studio-step"><span>03</span><strong>Export</strong><small>Download a chart or CSV</small></div>
+                </div>
+            </div>
+            <div class="studio-preview" aria-label="Illustrative preview of a chart and data table; no live data">
+                <div class="preview-head"><span><i></i> INTERFACE PREVIEW</span><small>ILLUSTRATIVE ? NO LIVE DATA</small></div>
+                <div class="preview-tabs"><span class="selected">Visualization</span><span>Data Grid</span><span>Forecast</span></div>
+                <div class="preview-chart">
+                    <div class="chart-y-guide"><i></i><i></i><i></i><i></i></div>
+                    <svg viewBox="0 0 520 190" preserveAspectRatio="none" aria-hidden="true">
+                        <defs><linearGradient id="studioLineFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#21A5EC" stop-opacity=".3"/><stop offset="1" stop-color="#21A5EC" stop-opacity="0"/></linearGradient></defs>
+                        <path class="chart-area" d="M0 150 C45 142 53 116 95 124 S153 132 192 96 S252 108 294 72 S360 90 398 47 S466 62 520 20 L520 190 L0 190Z"/>
+                        <path class="chart-line" d="M0 150 C45 142 53 116 95 124 S153 132 192 96 S252 108 294 72 S360 90 398 47 S466 62 520 20"/>
+                        <circle cx="398" cy="47" r="4"/><circle cx="520" cy="20" r="4"/>
+                    </svg>
+                    <div class="chart-x-guide"><i></i><i></i><i></i><i></i><i></i></div>
+                </div>
+                <div class="preview-data-lines"><i></i><i></i><i></i></div>
+                <div class="preview-caption">Charts, tables, and model outputs render here when your query returns results.</div>
+            </div>
+        </div>
+        <div class="studio-suggestions">
+            <div class="suggestion-heading"><span>START WITH A QUESTION</span><small>Examples submit through Assistant</small></div>
+            <div class="query-chips">
+                <button class="query-chip" (click)="suggestionSelected.emit('What is the average payment value for each payment type? Round to 2 decimal places and sort by highest average first.')"><span>Average payment value by payment type</span><lucide-icon [img]="ArrowRight" [size]="14"></lucide-icon></button>
+                <button class="query-chip" (click)="suggestionSelected.emit('Predict daily order volume for the next 30 days based on historical orders.')"><span>Forecast order volume for the next 30 days</span><lucide-icon [img]="ArrowRight" [size]="14"></lucide-icon></button>
+                <button class="query-chip" (click)="suggestionSelected.emit('Which top 5 product categories generate the highest total revenue?')"><span>Top product categories by revenue</span><lucide-icon [img]="ArrowRight" [size]="14"></lucide-icon></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Studio Layout -->
+    <div *ngIf="datasets.length > 0" class="studio-workspace">
+
+        <!-- Left: Dataset Selector Shelf -->
+        <aside class="dataset-shelf">
+            <div class="shelf-header">
+                <div class="shelf-title">
+                    <lucide-icon [img]="Layers" [size]="16"></lucide-icon>
+                    <span>Session Datasets ({{ datasets.length }})</span>
+                </div>
+            </div>
+            <div class="shelf-list">
+                <div *ngFor="let ds of datasets"
+                     class="dataset-card"
+                     [class.active]="activeDataset?.id === ds.id"
+                     (click)="selectDataset(ds)">
+                    <div class="card-top">
+                        <span class="dataset-badge" [class.badge-ml]="ds.sourceTool === 'ml_tool'" [class.badge-sql]="ds.sourceTool === 'sql_tool'">
+                            {{ ds.sourceToolLabel }}
+                        </span>
+                        <span class="record-count">{{ ds.data.length }} rows</span>
+                    </div>
+                    <div class="dataset-name" [title]="ds.title">{{ ds.title }}</div>
+                    <div class="dataset-meta">
+                        <span>{{ ds.columns.length }} columns</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right: Studio Main Canvas -->
+        <main class="studio-canvas" *ngIf="activeDataset">
+            <!-- Studio Toolbar -->
+            <header class="canvas-header">
+                <div class="dataset-info">
+                    <div class="title-row">
+                        <h2 class="active-title">{{ activeDataset.title }}</h2>
+                        <span class="active-tool-tag" [class.badge-ml]="activeDataset.sourceTool === 'ml_tool'" [class.badge-sql]="activeDataset.sourceTool === 'sql_tool'">
+                            {{ activeDataset.sourceToolLabel }}
+                        </span>
+                    </div>
+                    <div class="dataset-stats-strip">
+                        <span><strong>{{ datasetStats.totalRows }}</strong> records</span>
+                        <span class="stat-dot">•</span>
+                        <span><strong>{{ datasetStats.columnCount }}</strong> attributes</span>
+                        <span class="stat-dot">•</span>
+                        <span><strong>{{ datasetStats.numericCols }}</strong> metrics</span>
+                    </div>
+                </div>
+
+                <div class="canvas-actions">
+                    <!-- View Mode Switcher -->
+                    <div class="view-mode-tabs">
+                        <button class="mode-tab" [class.active]="activeTab === 'visual'" (click)="activeTab = 'visual'">
+                            <lucide-icon [img]="BarChart3" [size]="15"></lucide-icon>
+                            <span>Visualization</span>
+                        </button>
+                        <button class="mode-tab" [class.active]="activeTab === 'table'" (click)="activeTab = 'table'">
+                            <lucide-icon [img]="Table" [size]="15"></lucide-icon>
+                            <span>Data Grid</span>
+                        </button>
+                        <button class="mode-tab" [class.active]="activeTab === 'json'" (click)="activeTab = 'json'">
+                            <lucide-icon [img]="FileCode" [size]="15"></lucide-icon>
+                            <span>Raw JSON</span>
+                        </button>
+                    </div>
+
+                    <!-- Export Actions -->
+                    <div class="export-actions">
+                        <button *ngIf="activeTab === 'visual'" class="action-btn" (click)="downloadChartPng()" title="Download Chart PNG">
+                            <lucide-icon [img]="Download" [size]="15"></lucide-icon>
+                            <span>Export PNG</span>
+                        </button>
+                        <button class="action-btn" (click)="downloadCsv()" title="Download CSV">
+                            <lucide-icon [img]="FileSpreadsheet" [size]="15"></lucide-icon>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tab 1: Visualizer -->
+            <div *ngIf="activeTab === 'visual'" class="canvas-body visual-view">
+                <!-- Chart Type Controls -->
+                <div class="chart-controls-bar">
+                    <span class="controls-label">Render Chart As:</span>
+                    <div class="chart-type-chips">
+                        <button *ngFor="let opt of activeDataset.options"
+                                class="chart-type-chip"
+                                [class.active]="activeDataset.selectedChartType === opt.chart_type"
+                                [disabled]="isGeneratingChart"
+                                (click)="generateChartForType(opt.chart_type || 'bar')">
+                            <lucide-icon *ngIf="opt.chart_type === 'line'" [img]="LineChart" [size]="15"></lucide-icon>
+                            <lucide-icon *ngIf="opt.chart_type === 'bar'" [img]="BarChart3" [size]="15"></lucide-icon>
+                            <lucide-icon *ngIf="opt.chart_type === 'area'" [img]="TrendingUp" [size]="15"></lucide-icon>
+                            <lucide-icon *ngIf="opt.chart_type === 'scatter'" [img]="PieChart" [size]="15"></lucide-icon>
+                            <span>{{ opt.label }}</span>
+                        </button>
+                    </div>
+                    <span *ngIf="isGeneratingChart" class="generating-indicator">
+                        <lucide-icon [img]="RefreshCw" [size]="14" class="spin"></lucide-icon>
+                        <span>Rendering Plotly figure...</span>
+                    </span>
+                </div>
+
+                <!-- Plotly Chart Host -->
+                <div class="chart-stage">
+                    <div #chartContainer class="plotly-canvas-host"></div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Table Data Grid -->
+            <div *ngIf="activeTab === 'table'" class="canvas-body table-view">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <lucide-icon [img]="Search" [size]="16" class="search-ico"></lucide-icon>
+                        <input type="text"
+                               placeholder="Filter table rows..."
+                               [(ngModel)]="tableSearchTerm"
+                               class="table-search" />
+                    </div>
+                    <span class="showing-count">Showing {{ filteredTableData.length }} of {{ activeDataset.data.length }} rows</span>
+                </div>
+
+                <div class="grid-table-container">
+                    <table class="solvique-data-table">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let col of activeDataset.columns">{{ col }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of filteredTableData">
+                                <td *ngFor="let col of activeDataset.columns">
+                                    {{ row[col] !== null && row[col] !== undefined ? row[col] : '—' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 3: JSON View -->
+            <div *ngIf="activeTab === 'json'" class="canvas-body json-view">
+                <pre class="json-code-block"><code>{{ activeDataset.data | json }}</code></pre>
+            </div>
+        </main>
+    </div>
+</div>

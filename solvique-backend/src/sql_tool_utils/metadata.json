@@ -1,0 +1,949 @@
+[
+  {
+    "database": "Brazilian E-Commerce",
+    "platform": "Supabase PostgreSQL 17",
+    "schema": "public",
+    "source_file": "brazilian_ecommerce_metadata.md",
+    "generated_at": "2026-03-13T10:55:26.932767Z",
+    "total_chunks": 8,
+    "files": [
+      {
+        "chunk_number": 1,
+        "filename": "01_orders.json",
+        "table_name": "orders",
+        "column_count": 8,
+        "row_count": 99440,
+        "primary_key": "order_id"
+      },
+      {
+        "chunk_number": 2,
+        "filename": "02_customers.json",
+        "table_name": "customers",
+        "column_count": 5,
+        "row_count": 99441,
+        "primary_key": "customer_id"
+      },
+      {
+        "chunk_number": 3,
+        "filename": "03_products.json",
+        "table_name": "products",
+        "column_count": 9,
+        "row_count": 32951,
+        "primary_key": "product_id"
+      },
+      {
+        "chunk_number": 4,
+        "filename": "04_sellers.json",
+        "table_name": "sellers",
+        "column_count": 4,
+        "row_count": 3095,
+        "primary_key": "seller_id"
+      },
+      {
+        "chunk_number": 5,
+        "filename": "05_order_items.json",
+        "table_name": "order_items",
+        "column_count": 7,
+        "row_count": 98665,
+        "primary_key": [
+          "order_id",
+          "order_item_id"
+        ]
+      },
+      {
+        "chunk_number": 6,
+        "filename": "06_order_payments.json",
+        "table_name": "order_payments",
+        "column_count": 5,
+        "row_count": 99440,
+        "primary_key": [
+          "order_id",
+          "payment_sequential"
+        ]
+      },
+      {
+        "chunk_number": 7,
+        "filename": "07_order_reviews.json",
+        "table_name": "order_reviews",
+        "column_count": 7,
+        "row_count": 99223,
+        "primary_key": [
+          "review_id",
+          "order_id"
+        ]
+      },
+      {
+        "chunk_number": 8,
+        "filename": "08_geolocation.json",
+        "table_name": "geolocation",
+        "column_count": 5,
+        "row_count": 1000163,
+        "primary_key": null
+      }
+    ]
+  },
+  {
+    "chunk_number": 1,
+    "title": "Table: orders",
+    "database": "Brazilian E-Commerce",
+    "table_name": "orders",
+    "purpose": "Central fact table. Each row represents one customer order. It is the hub that links customers, order items, payments, and reviews.",
+    "primary_key": "order_id",
+    "foreign_key_columns": [
+      "customer_id"
+    ],
+    "columns": [
+      {
+        "column_name": "order_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Unique identifier for each order (UUID-like hash). Primary key."
+      },
+      {
+        "column_name": "customer_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": true,
+        "description": "Foreign key linking to customers.customer_id. Identifies the customer who placed this order."
+      },
+      {
+        "column_name": "order_status",
+        "data_type": "TEXT",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          "created",
+          "approved",
+          "invoiced",
+          "processing",
+          "shipped",
+          "delivered",
+          "canceled",
+          "unavailable"
+        ],
+        "description": "Current lifecycle status of the order."
+      },
+      {
+        "column_name": "order_purchase_timestamp",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "date_range": "2016-09-04 to 2018-10-17",
+        "description": "Timestamp when the customer placed the order."
+      },
+      {
+        "column_name": "order_approved_at",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "null_note": "NULL for 160 orders (cancelled or pending payment).",
+        "description": "Timestamp when payment was approved."
+      },
+      {
+        "column_name": "order_delivered_carrier_date",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "null_note": "NULL for 1783 orders not yet handed to carrier.",
+        "description": "Timestamp when the order was handed off to the logistics carrier."
+      },
+      {
+        "column_name": "order_delivered_customer_date",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "null_note": "NULL for 2965 orders not yet delivered.",
+        "description": "Timestamp when the order was delivered to the customer."
+      },
+      {
+        "column_name": "order_estimated_delivery_date",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "description": "Estimated delivery date communicated to the customer at purchase."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "customers",
+        "join_column": "customer_id",
+        "related_column": "customer_id",
+        "type": "many-to-one",
+        "description": "Each order belongs to one customer."
+      },
+      {
+        "related_table": "order_items",
+        "join_column": "order_id",
+        "related_column": "order_id",
+        "type": "one-to-many",
+        "description": "An order can have multiple line items."
+      },
+      {
+        "related_table": "order_payments",
+        "join_column": "order_id",
+        "related_column": "order_id",
+        "type": "one-to-many",
+        "description": "An order can have one or more payment entries."
+      },
+      {
+        "related_table": "order_reviews",
+        "join_column": "order_id",
+        "related_column": "order_id",
+        "type": "one-to-one",
+        "description": "An order can have one customer review."
+      }
+    ],
+    "metadata": {
+      "date_range": "2016-09-04 to 2018-10-17",
+      "row_count": 99440,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 2,
+    "title": "Table: customers",
+    "database": "Brazilian E-Commerce",
+    "table_name": "customers",
+    "purpose": "Stores customer location and identity data. customer_id is order-scoped (one row per order), while customer_unique_id identifies the same physical person across multiple orders.",
+    "primary_key": "customer_id",
+    "foreign_key_columns": [],
+    "columns": [
+      {
+        "column_name": "customer_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Primary key. Order-scoped customer ID â€” unique per order, not per person. Use customer_unique_id to count distinct real customers."
+      },
+      {
+        "column_name": "customer_unique_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": true,
+        "description": "True unique customer identifier. Use this for repeat-customer analysis. 96096 distinct values out of 99441 rows."
+      },
+      {
+        "column_name": "customer_zip_code_prefix",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "First 5 digits of the customer's Brazilian ZIP code (CEP). Use to join with the geolocation table."
+      },
+      {
+        "column_name": "customer_city",
+        "data_type": "TEXT",
+        "column_type": "free_text",
+        "nullable": true,
+        "description": "City name of the customer (in Portuguese)."
+      },
+      {
+        "column_name": "customer_state",
+        "data_type": "TEXT",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          "AC",
+          "AL",
+          "AM",
+          "AP",
+          "BA",
+          "CE",
+          "DF",
+          "ES",
+          "GO",
+          "MA",
+          "MG",
+          "MS",
+          "MT",
+          "PA",
+          "PB",
+          "PE",
+          "PI",
+          "PR",
+          "RJ",
+          "RN",
+          "RO",
+          "RR",
+          "RS",
+          "SC",
+          "SE",
+          "SP",
+          "TO"
+        ],
+        "description": "Brazilian state code of the customer (2-letter abbreviation, e.g. SP, RJ)."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "orders",
+        "join_column": "customer_id",
+        "related_column": "customer_id",
+        "type": "one-to-many",
+        "description": "One customer (unique_id) can have many orders."
+      },
+      {
+        "related_table": "geolocation",
+        "join_column": "customer_zip_code_prefix",
+        "related_column": "geolocation_zip_code_prefix",
+        "type": "many-to-many",
+        "description": "Joins to geolocation to get lat/lng coordinates. Use AVG(lat)/AVG(lng) after joining to avoid row duplication."
+      }
+    ],
+    "metadata": {
+      "unique_customers_by_unique_id": 96096,
+      "row_count": 99441,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 3,
+    "title": "Table: products",
+    "database": "Brazilian E-Commerce",
+    "table_name": "products",
+    "purpose": "Product catalogue. Contains physical product attributes and category. Does not store product name text or price â€” only name/description character lengths. Price is in order_items.",
+    "primary_key": "product_id",
+    "foreign_key_columns": [],
+    "columns": [
+      {
+        "column_name": "product_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Unique product identifier (UUID-like hash). Primary key."
+      },
+      {
+        "column_name": "product_category_name",
+        "data_type": "TEXT",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          "agro_industria_e_comercio",
+          "alimentos",
+          "alimentos_bebidas",
+          "artes",
+          "artes_e_artesanato",
+          "artigos_de_festas",
+          "artigos_de_natal",
+          "audio",
+          "automotivo",
+          "bebes",
+          "bebidas",
+          "beleza_saude",
+          "brinquedos",
+          "cama_mesa_banho",
+          "casa_conforto",
+          "casa_conforto_2",
+          "casa_construcao",
+          "cds_dvds_musicais",
+          "cine_foto",
+          "climatizacao",
+          "consoles_games",
+          "construcao_ferramentas_construcao",
+          "construcao_ferramentas_ferramentas",
+          "construcao_ferramentas_iluminacao",
+          "construcao_ferramentas_jardim",
+          "construcao_ferramentas_seguranca",
+          "cool_stuff",
+          "dvds_blu_ray",
+          "eletrodomesticos",
+          "eletrodomesticos_2",
+          "eletronicos",
+          "eletroportateis",
+          "esporte_lazer",
+          "fashion_bolsas_e_acessorios",
+          "fashion_calcados",
+          "fashion_esporte",
+          "fashion_roupa_feminina",
+          "fashion_roupa_infanto_juvenil",
+          "fashion_roupa_masculina",
+          "fashion_underwear_e_moda_praia",
+          "ferramentas_jardim",
+          "flores",
+          "fraldas_higiene",
+          "industria_comercio_e_negocios",
+          "informatica_acessorios",
+          "instrumentos_musicais",
+          "la_cuisine",
+          "livros_importados",
+          "livros_interesse_geral",
+          "livros_tecnicos",
+          "malas_acessorios",
+          "market_place",
+          "moveis_colchao_e_estofado",
+          "moveis_cozinha_area_de_servico_jantar_e_jardim",
+          "moveis_decoracao",
+          "moveis_escritorio",
+          "moveis_quarto",
+          "moveis_sala",
+          "musica",
+          "papelaria",
+          "pc_gamer",
+          "pcs",
+          "perfumaria",
+          "pet_shop",
+          "portateis_casa_forno_e_cafe",
+          "portateis_cozinha_e_preparadores_de_alimentos",
+          "relogios_presentes",
+          "seguros_e_servicos",
+          "sinalizacao_e_seguranca",
+          "tablets_impressao_imagem",
+          "telefonia",
+          "telefonia_fixa",
+          "utilidades_domesticas"
+        ],
+        "null_note": "610 products have no category assigned.",
+        "description": "Product category name in Portuguese (73 distinct values)."
+      },
+      {
+        "column_name": "product_name_length",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Character count of the product listing name."
+      },
+      {
+        "column_name": "product_description_length",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Character count of the product description text."
+      },
+      {
+        "column_name": "product_photos_qty",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "value_range": "1 to 20",
+        "description": "Number of photos in the product listing."
+      },
+      {
+        "column_name": "product_weight_g",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "value_range": "0 to 40425 grams",
+        "description": "Product weight in grams."
+      },
+      {
+        "column_name": "product_length_cm",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Product length in centimetres."
+      },
+      {
+        "column_name": "product_height_cm",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Product height in centimetres."
+      },
+      {
+        "column_name": "product_width_cm",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Product width in centimetres."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "order_items",
+        "join_column": "product_id",
+        "related_column": "product_id",
+        "type": "one-to-many",
+        "description": "A product can appear in many order line items."
+      }
+    ],
+    "metadata": {
+      "distinct_categories": 73,
+      "null_category_count": 610,
+      "row_count": 32951,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 4,
+    "title": "Table: sellers",
+    "database": "Brazilian E-Commerce",
+    "table_name": "sellers",
+    "purpose": "Marketplace sellers who list and fulfil products. Each seller has a location. Majority of sellers are based in SÃ£o Paulo (SP).",
+    "primary_key": "seller_id",
+    "foreign_key_columns": [],
+    "columns": [
+      {
+        "column_name": "seller_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Unique seller identifier (UUID-like hash). Primary key."
+      },
+      {
+        "column_name": "seller_zip_code_prefix",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "First 5 digits of the seller's Brazilian ZIP code (CEP). Use to join with the geolocation table."
+      },
+      {
+        "column_name": "seller_city",
+        "data_type": "TEXT",
+        "column_type": "free_text",
+        "nullable": true,
+        "description": "City where the seller is located (in Portuguese, 611 distinct cities)."
+      },
+      {
+        "column_name": "seller_state",
+        "data_type": "TEXT",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          "AC",
+          "AM",
+          "BA",
+          "CE",
+          "DF",
+          "ES",
+          "GO",
+          "MA",
+          "MG",
+          "MS",
+          "MT",
+          "PA",
+          "PB",
+          "PE",
+          "PI",
+          "PR",
+          "RJ",
+          "RN",
+          "RO",
+          "RS",
+          "SC",
+          "SE",
+          "SP"
+        ],
+        "description": "Brazilian state code of the seller (2-letter abbreviation, 23 distinct states)."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "order_items",
+        "join_column": "seller_id",
+        "related_column": "seller_id",
+        "type": "one-to-many",
+        "description": "A seller can fulfil many order line items."
+      },
+      {
+        "related_table": "geolocation",
+        "join_column": "seller_zip_code_prefix",
+        "related_column": "geolocation_zip_code_prefix",
+        "type": "many-to-many",
+        "description": "Joins to geolocation to get lat/lng coordinates. Use AVG(lat)/AVG(lng) after joining to avoid row duplication."
+      }
+    ],
+    "metadata": {
+      "distinct_states": 23,
+      "distinct_cities": 611,
+      "row_count": 3095,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 5,
+    "title": "Table: order_items",
+    "database": "Brazilian E-Commerce",
+    "table_name": "order_items",
+    "purpose": "Line-item bridge table. Each row is one product within one order. This is the key table for joining orders to products and sellers, and the source of item-level pricing and freight costs.",
+    "primary_key": [
+      "order_id",
+      "order_item_id"
+    ],
+    "foreign_key_columns": [
+      "order_id",
+      "product_id",
+      "seller_id"
+    ],
+    "columns": [
+      {
+        "column_name": "order_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Composite primary key (part 1). Foreign key to orders.order_id."
+      },
+      {
+        "column_name": "order_item_id",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": false,
+        "description": "Composite primary key (part 2). Sequential item number within the order (1, 2, 3â€¦). Together with order_id forms the unique key."
+      },
+      {
+        "column_name": "product_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": true,
+        "description": "Foreign key to products.product_id â€” the product purchased."
+      },
+      {
+        "column_name": "seller_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": true,
+        "description": "Foreign key to sellers.seller_id â€” the seller fulfilling this item."
+      },
+      {
+        "column_name": "shipping_limit_date",
+        "data_type": "TEXT",
+        "column_type": "datetime_text",
+        "nullable": true,
+        "description": "Deadline for the seller to ship this item (stored as text timestamp)."
+      },
+      {
+        "column_name": "price",
+        "data_type": "NUMERIC",
+        "column_type": "numeric",
+        "nullable": true,
+        "value_range": "0.85 to 6735.00 BRL",
+        "description": "Unit price of the item in Brazilian Reais (BRL). Average 125.97 BRL."
+      },
+      {
+        "column_name": "freight_value",
+        "data_type": "NUMERIC",
+        "column_type": "numeric",
+        "nullable": true,
+        "value_range": "0.00 to 409.68 BRL",
+        "description": "Shipping/freight cost for this item in Brazilian Reais (BRL)."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "orders",
+        "join_column": "order_id",
+        "related_column": "order_id",
+        "type": "many-to-one",
+        "description": "Multiple items belong to one order."
+      },
+      {
+        "related_table": "products",
+        "join_column": "product_id",
+        "related_column": "product_id",
+        "type": "many-to-one",
+        "description": "Each line item references one product."
+      },
+      {
+        "related_table": "sellers",
+        "join_column": "seller_id",
+        "related_column": "seller_id",
+        "type": "many-to-one",
+        "description": "Each line item is fulfilled by one seller."
+      }
+    ],
+    "metadata": {
+      "currency": "BRL (Brazilian Reais)",
+      "price_range_brl": "0.85 to 6735.00",
+      "avg_price_brl": "125.97",
+      "freight_range_brl": "0.00 to 409.68",
+      "row_count": 98665,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 6,
+    "title": "Table: order_payments",
+    "database": "Brazilian E-Commerce",
+    "table_name": "order_payments",
+    "purpose": "Records how each order was paid. An order can have multiple payment rows (e.g. part credit card and part voucher), each with a sequential number. SUM(payment_value) GROUP BY order_id gives total amount paid.",
+    "primary_key": [
+      "order_id",
+      "payment_sequential"
+    ],
+    "foreign_key_columns": [
+      "order_id"
+    ],
+    "columns": [
+      {
+        "column_name": "order_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Composite primary key (part 1). Foreign key to orders.order_id."
+      },
+      {
+        "column_name": "payment_sequential",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": false,
+        "value_range": "1 to 27",
+        "description": "Composite primary key (part 2). Payment sequence number within the order. 1 = primary payment. Multiple rows indicate split payments."
+      },
+      {
+        "column_name": "payment_type",
+        "data_type": "TEXT",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          "credit_card",
+          "boleto",
+          "voucher",
+          "debit_card",
+          "not_defined"
+        ],
+        "description": "Payment method. boleto is a Brazilian bank-slip payment. credit_card is most common."
+      },
+      {
+        "column_name": "payment_installments",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "value_range": "0 to 24",
+        "description": "Number of installments. 1 = paid in full. Greater than 1 = buy-now-pay-later installment plan (common in Brazil)."
+      },
+      {
+        "column_name": "payment_value",
+        "data_type": "NUMERIC",
+        "column_type": "numeric",
+        "nullable": true,
+        "value_range": "0.00 to 13664.08 BRL",
+        "description": "Amount paid in this payment entry in Brazilian Reais (BRL)."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "orders",
+        "join_column": "order_id",
+        "related_column": "order_id",
+        "type": "many-to-one",
+        "description": "Multiple payment rows can belong to one order."
+      }
+    ],
+    "metadata": {
+      "currency": "BRL (Brazilian Reais)",
+      "payment_value_range_brl": "0.00 to 13664.08",
+      "max_installments": 24,
+      "max_payment_sequential": 27,
+      "row_count": 99440,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 7,
+    "title": "Table: order_reviews",
+    "database": "Brazilian E-Commerce",
+    "table_name": "order_reviews",
+    "purpose": "Customer satisfaction reviews submitted after delivery. Each order receives at most one review. review_score is a 1 to 5 star integer rating. Comment fields are often NULL â€” many customers only leave a score.",
+    "primary_key": [
+      "review_id",
+      "order_id"
+    ],
+    "foreign_key_columns": [
+      "order_id"
+    ],
+    "columns": [
+      {
+        "column_name": "review_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Composite primary key (part 1). Unique review identifier."
+      },
+      {
+        "column_name": "order_id",
+        "data_type": "TEXT",
+        "column_type": "identifier",
+        "nullable": false,
+        "description": "Composite primary key (part 2). Foreign key to orders.order_id."
+      },
+      {
+        "column_name": "review_score",
+        "data_type": "INTEGER",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "description": "Star rating given by the customer. 1 = worst, 5 = best."
+      },
+      {
+        "column_name": "review_comment_title",
+        "data_type": "TEXT",
+        "column_type": "free_text",
+        "nullable": true,
+        "null_note": "NULL for 87655 out of 99223 rows (88% of reviews have no title).",
+        "description": "Optional short title of the review (in Portuguese)."
+      },
+      {
+        "column_name": "review_comment_message",
+        "data_type": "TEXT",
+        "column_type": "free_text",
+        "nullable": true,
+        "null_note": "NULL for 58247 out of 99223 rows (59% of reviews have no message).",
+        "description": "Optional detailed review text (in Portuguese)."
+      },
+      {
+        "column_name": "review_creation_date",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "description": "Timestamp when the customer submitted the review."
+      },
+      {
+        "column_name": "review_answer_timestamp",
+        "data_type": "TIMESTAMP",
+        "column_type": "datetime",
+        "nullable": true,
+        "description": "Timestamp when the review survey was answered or acknowledged."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "orders",
+        "join_column": "order_id",
+        "related_column": "order_id",
+        "type": "many-to-one",
+        "description": "Each review is associated with one order."
+      }
+    ],
+    "metadata": {
+      "null_comment_title_count": 87655,
+      "null_comment_message_count": 58247,
+      "review_language": "Portuguese",
+      "row_count": 99223,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  },
+  {
+    "chunk_number": 8,
+    "title": "Table: geolocation",
+    "database": "Brazilian E-Commerce",
+    "table_name": "geolocation",
+    "purpose": "Lookup table mapping Brazilian ZIP code prefixes (first 5 digits of CEP) to geographic coordinates and city/state. Has no primary key â€” multiple lat/lng points exist per zip prefix. Always use AVG(lat)/AVG(lng) when joining to avoid row duplication.",
+    "primary_key": null,
+    "foreign_key_columns": [],
+    "columns": [
+      {
+        "column_name": "geolocation_zip_code_prefix",
+        "data_type": "INTEGER",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "First 5 digits of a Brazilian ZIP code (CEP). Not unique â€” multiple coordinate rows can exist per prefix. Join key to customers.customer_zip_code_prefix and sellers.seller_zip_code_prefix."
+      },
+      {
+        "column_name": "geolocation_lat",
+        "data_type": "NUMERIC",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Latitude coordinate. Use AVG() when joining to deduplicate."
+      },
+      {
+        "column_name": "geolocation_lng",
+        "data_type": "NUMERIC",
+        "column_type": "numeric",
+        "nullable": true,
+        "description": "Longitude coordinate. Use AVG() when joining to deduplicate."
+      },
+      {
+        "column_name": "geolocation_city",
+        "data_type": "TEXT",
+        "column_type": "free_text",
+        "nullable": true,
+        "description": "City name corresponding to the ZIP prefix (in Portuguese)."
+      },
+      {
+        "column_name": "geolocation_state",
+        "data_type": "TEXT",
+        "column_type": "categorical",
+        "nullable": true,
+        "column_values": [
+          "AC",
+          "AL",
+          "AM",
+          "AP",
+          "BA",
+          "CE",
+          "DF",
+          "ES",
+          "GO",
+          "MA",
+          "MG",
+          "MS",
+          "MT",
+          "PA",
+          "PB",
+          "PE",
+          "PI",
+          "PR",
+          "RJ",
+          "RN",
+          "RO",
+          "RR",
+          "RS",
+          "SC",
+          "SE",
+          "SP",
+          "TO"
+        ],
+        "description": "Brazilian state code (2-letter abbreviation) for this ZIP prefix."
+      }
+    ],
+    "relationships": [
+      {
+        "related_table": "customers",
+        "join_column": "geolocation_zip_code_prefix",
+        "related_column": "customer_zip_code_prefix",
+        "type": "one-to-many",
+        "description": "Maps customer ZIP codes to coordinates."
+      },
+      {
+        "related_table": "sellers",
+        "join_column": "geolocation_zip_code_prefix",
+        "related_column": "seller_zip_code_prefix",
+        "type": "one-to-many",
+        "description": "Maps seller ZIP codes to coordinates."
+      }
+    ],
+    "metadata": {
+      "no_primary_key": "true",
+      "join_note": "Always use AVG(geolocation_lat) and AVG(geolocation_lng) after joining to avoid row multiplication.",
+      "row_count": 1000163,
+      "platform": "Supabase PostgreSQL 17",
+      "schema": "public"
+    },
+    "schema": "public",
+    "platform": "Supabase PostgreSQL 17",
+    "generated_at": "2026-03-13T10:55:26.932767Z"
+  }
+]

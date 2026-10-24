@@ -1,0 +1,4 @@
+{
+  "_description": "Default horizon if user does not specify number of days",
+  "horizon_days": 30
+}

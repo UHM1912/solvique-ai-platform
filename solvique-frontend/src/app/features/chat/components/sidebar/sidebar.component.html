@@ -1,0 +1,84 @@
+<!-- Mobile header bar (visible only on small screens) -->
+<div class="mobile-header" *ngIf="isMobile">
+    <button class="icon-btn" (click)="requestToggle.emit()" aria-label="Toggle sidebar">
+        <lucide-icon [img]="Menu" [size]="22"></lucide-icon>
+    </button>
+
+</div>
+
+<!-- Sidebar panel -->
+<aside class="sidebar"
+    [class.collapsed]="isCollapsed && !isMobile"
+    [class.mobile-open]="isMobile && mobileOpen"
+    [class.mobile-closed]="isMobile && !mobileOpen">
+
+    <!-- Top section -->
+    <div class="sidebar-top">
+        <div class="brand-row">
+            <div class="brand" *ngIf="!isCollapsed || isMobile">
+                <img src="assets/solvique-logo.png" alt="Solvique — Data to Decisions" class="sidebar-logo-full" />
+            </div>
+            <div class="brand-collapsed" *ngIf="isCollapsed && !isMobile">
+                <img src="assets/solvique-icon.png" alt="Solvique" class="sidebar-logo-icon" />
+            </div>
+
+            <button class="icon-btn toggle-btn" (click)="requestToggle.emit()" *ngIf="!isMobile" [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+                <lucide-icon [img]="Menu" [size]="18"></lucide-icon>
+            </button>
+            <button class="icon-btn toggle-btn" (click)="mobileOpenChange.emit(false)" *ngIf="isMobile" aria-label="Close sidebar">
+                <lucide-icon [img]="X" [size]="18"></lucide-icon>
+            </button>
+        </div>
+
+        <button class="new-chat-btn" (click)="newChat.emit()" id="newChatBtn" [title]="'Start New Analysis'">
+            <lucide-icon [img]="Plus" [size]="17"></lucide-icon>
+            <span *ngIf="!isCollapsed || isMobile">New Analysis</span>
+        </button>
+
+        <!-- Search -->
+        <div class="search-box" *ngIf="!isCollapsed || isMobile">
+            <lucide-icon [img]="Search" [size]="15" class="search-icon"></lucide-icon>
+            <input type="text"
+                placeholder="Search inquiries…"
+                [(ngModel)]="searchTerm"
+                (input)="onSearchInput()"
+                id="chatSearchInput" />
+            <button class="clear-search" *ngIf="searchTerm" (click)="clearSearch()" aria-label="Clear search">
+                <lucide-icon [img]="X" [size]="13"></lucide-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat list -->
+    <div class="chat-list" *ngIf="!isCollapsed || isMobile">
+        <div class="chat-list-label">Recent Analyses</div>
+
+        <div *ngIf="isLoading" class="loading-chats">
+            <div class="skeleton-item" *ngFor="let _ of [1,2,3]"></div>
+        </div>
+
+        <div *ngIf="!isLoading && chats.length === 0" class="empty-state">
+            No analyses recorded yet
+        </div>
+
+        <div class="chat-item"
+            *ngFor="let chat of chats"
+            [class.active]="chat.selected"
+            (click)="selectChatEvent.emit(chat.id)"
+            [id]="'chat-' + chat.id">
+            <lucide-icon [img]="MessageSquare" [size]="15" class="chat-icon"></lucide-icon>
+            <span class="chat-title">{{ chat.title }}</span>
+            <button class="delete-btn" (click)="onDeleteChat($event, chat.id)" aria-label="Delete conversation" title="Delete conversation">
+                <lucide-icon [img]="Trash2" [size]="13"></lucide-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom section -->
+    <div class="sidebar-bottom">
+        <button class="theme-toggle-btn" (click)="toggleTheme()" id="themeToggleBtn" [title]="themeService.isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            <lucide-icon [img]="themeService.isDark ? Sun : Moon" [size]="17"></lucide-icon>
+            <span *ngIf="!isCollapsed || isMobile">{{ themeService.isDark ? 'Light Theme' : 'Dark Theme' }}</span>
+        </button>
+    </div>
+</aside>

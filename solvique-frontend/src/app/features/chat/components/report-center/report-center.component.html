@@ -1,0 +1,161 @@
+<div class="report-center-container">
+
+    <!-- Report onboarding: illustrative structure only; no report has been generated. -->
+    <section *ngIf="!hasConversationContent" class="report-empty-state" aria-labelledby="report-welcome-title">
+        <div class="report-intro">
+            <div class="report-copy">
+                <div class="report-kicker"><span></span> DECISION SUPPORT</div>
+                <h2 class="empty-title" id="report-welcome-title">Findings become<br><em>forward motion.</em></h2>
+                <p class="empty-desc">Solvique gathers the evidence from your conversation and shapes it into a clear executive brief, ready to review and export.</p>
+                <div class="report-flow">
+                    <div><b>01</b><span><strong>Ask</strong><small>Run a query, forecast, or document search.</small></span></div>
+                    <div><b>02</b><span><strong>Synthesize</strong><small>Findings and supporting visuals are organized.</small></span></div>
+                    <div><b>03</b><span><strong>Share</strong><small>Export the completed brief as a DOCX.</small></span></div>
+                </div>
+                <button class="report-start-btn" (click)="requestAssistant.emit()"><lucide-icon [img]="Sparkles" [size]="16"></lucide-icon><span>Start an analysis</span><span class="btn-arrow">?</span></button>
+                <p class="report-note">The export becomes available after this conversation contains findings.</p>
+            </div>
+            <div class="report-mock" aria-label="Illustrative executive report structure; no report generated">
+                <div class="mock-paper-top"><span>SOLVIQUE ? EXECUTIVE BRIEF</span><small>ILLUSTRATIVE PREVIEW</small></div>
+                <div class="mock-paper-title"><i></i><i></i></div>
+                <div class="mock-section"><div class="mock-section-heading"><b>01</b><strong>Executive summary</strong></div><i></i><i></i></div>
+                <div class="mock-section mock-chart-section"><div class="mock-section-heading"><b>02</b><strong>Analytical evidence</strong></div><div class="mock-chart-lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+                <div class="mock-section"><div class="mock-section-heading"><b>03</b><strong>Recommendations</strong></div><i></i><i></i></div>
+                <div class="mock-paper-foot"><span>Structure preview only</span><span>DOCX export</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Report Preview Layout -->
+    <div *ngIf="hasConversationContent" class="report-workspace">
+
+        <!-- Top Action Bar -->
+        <header class="report-action-bar">
+            <div class="report-meta">
+                <div class="report-badge-row">
+                    <span class="report-badge">Executive Brief</span>
+                    <span class="report-ai-tag">
+                        <lucide-icon [img]="Sparkles" [size]="13"></lucide-icon>
+                        <span>Gemini Grounded Synthesis</span>
+                    </span>
+                </div>
+                <h1 class="report-title">{{ conversationTitle || 'Analytical Inquiry Report' }}</h1>
+                <div class="report-sub-info">
+                    <span>{{ turnCount }} analytical turns</span>
+                    <span class="sep">•</span>
+                    <span>Updated {{ displayDate | date:'medium' }}</span>
+                </div>
+            </div>
+
+            <div class="report-actions">
+                <button class="btn-refresh" [disabled]="isLoadingPreview" (click)="loadReportPreview()" title="Re-synthesize with AI">
+                    <lucide-icon [img]="RefreshCw" [size]="16" [class.spin]="isLoadingPreview"></lucide-icon>
+                    <span>{{ isLoadingPreview ? 'Synthesizing...' : 'Re-synthesize' }}</span>
+                </button>
+                <button class="btn-export-docx" [disabled]="isDownloading || isLoadingPreview" (click)="downloadDocx()">
+                    <lucide-icon [img]="Download" [size]="17" [class.spin]="isDownloading"></lucide-icon>
+                    <span>{{ isDownloading ? 'Preparing Document...' : 'Download Report (.docx)' }}</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Loading State for Synthesis -->
+        <div *ngIf="isLoadingPreview" class="synthesis-loading-banner">
+            <div class="spinner"></div>
+            <div class="loading-copy">
+                <strong>Synthesizing Executive Report with Gemini...</strong>
+                <span>Correlating queries, compiling trend analytics, and grounding takeaways in your data.</span>
+            </div>
+        </div>
+
+        <!-- Document Preview Canvas (Styled as an Executive Whitepaper) -->
+        <div class="document-scroll-viewport">
+            <div class="document-paper">
+
+                <!-- Document Header -->
+                <div class="paper-header">
+                    <div class="brand-strip">
+                        <span class="brand-name">Solvique</span>
+                        <span class="brand-tagline">Data to Decisions</span>
+                    </div>
+                    <div class="paper-meta-table">
+                        <div class="meta-cell">
+                            <span class="meta-label">DOCUMENT</span>
+                            <span class="meta-val">Executive Analytical Brief</span>
+                        </div>
+                        <div class="meta-cell">
+                            <span class="meta-label">DATE</span>
+                            <span class="meta-val">{{ displayDate | date:'longDate' }}</span>
+                        </div>
+                        <div class="meta-cell">
+                            <span class="meta-label">INQUIRIES</span>
+                            <span class="meta-val">{{ turnCount }} Turns</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="paper-divider"></div>
+
+                <!-- Sections Stream -->
+                <div class="sections-stream">
+                    <div *ngFor="let section of sections; let i = index" class="report-section-block" [ngClass]="'section-' + section.kind">
+
+                        <!-- Section Heading -->
+                        <h2 class="section-heading">{{ section.heading }}</h2>
+
+                        <!-- Analysis / Narrative -->
+                        <div *ngIf="section.kind === 'analysis'" class="section-body analysis-body">
+                            <p class="body-paragraph" *ngFor="let para of (section.body || '').split('\n\n')">
+                                {{ para }}
+                            </p>
+                        </div>
+
+                        <!-- Embedded Visualization Asset -->
+                        <div *ngIf="section.kind === 'visualization'" class="section-body viz-body">
+                            <div class="viz-card">
+                                <img *ngIf="section.asset_id"
+                                     [src]="getAssetImageUrl(section.asset_id)"
+                                     alt="Chart Asset"
+                                     class="viz-image" />
+                                <div class="viz-caption">{{ section.body }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Supporting Data Table -->
+                        <div *ngIf="section.kind === 'table'" class="section-body table-body">
+                            <p class="table-caption">{{ section.body }}</p>
+                            <div class="table-overflow-wrapper" *ngIf="section.table_rows && section.table_rows.length > 0">
+                                <table class="paper-table">
+                                    <thead>
+                                        <tr>
+                                            <th *ngFor="let col of section.table_columns">{{ col }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let row of section.table_rows">
+                                            <td *ngFor="let col of section.table_columns">
+                                                {{ row[col] !== null && row[col] !== undefined ? row[col] : '—' }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Appendix (SQL Query, References) -->
+                        <div *ngIf="section.kind === 'appendix'" class="section-body appendix-body">
+                            <pre class="appendix-code"><code>{{ section.body }}</code></pre>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Document Footer -->
+                <div class="paper-footer">
+                    <span>Generated by Solvique — Enterprise AI Analytics Engine</span>
+                    <span>Confidential & Proprietary</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

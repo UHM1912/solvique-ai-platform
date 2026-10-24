@@ -1,0 +1,92 @@
+{
+  "model_id": "freight_regressor",
+  "task": "regression",
+  "domain": "freight cost estimation",
+  "description": "Predicts the freight value (R$) for an order from product physical properties and seller-to-customer shipping distance. Designed for real-time shipping cost estimation on unlabelled or new orders.",
+  "pkl_path": "./saved_models/freight_regressor.pkl",
+  "version": "1.0.0",
+  "trained_on": "2026-04-07",
+  "training_rows": 98158,
+  "accuracy": {
+    "r2": 0.7031,
+    "mae": 3.9747,
+    "rmse": 8.4289,
+    "note": "Target is freight_value (R$). R\u00b2=0.70 indicates good fit for a skewed freight distribution; MAE of ~R$4 is acceptable for most pricing use-cases."
+  },
+  "feature_schema": {
+    "all_features": [
+      "product_weight_g",
+      "volume_cm3",
+      "distance_km",
+      "price"
+    ],
+    "top_k_features": [
+      "volume_cm3",
+      "distance_km",
+      "product_weight_g"
+    ],
+    "k": 3,
+    "feature_types": {
+      "product_weight_g": "numeric",
+      "volume_cm3": "numeric_engineered",
+      "distance_km": "numeric_engineered",
+      "price": "numeric"
+    },
+    "engineered": {
+      "volume_cm3": "product_length_cm * product_height_cm * product_width_cm",
+      "distance_km": "haversine(cust_lat, cust_lng, seller_lat, seller_lng)  [km]"
+    },
+    "target": "freight_value",
+    "col_order": [
+      "product_weight_g",
+      "volume_cm3",
+      "distance_km",
+      "price"
+    ]
+  },
+  "artifacts": {
+    "imputer_stats": "./registry/freight_regressor/artifacts/imputer_stats.json"
+  },
+  "llm_hints": {
+    "trigger_phrases": [
+      "freight value",
+      "shipping cost",
+      "delivery charge",
+      "how much to ship",
+      "estimate freight",
+      "predict shipping",
+      "what will freight cost",
+      "shipping estimate for this product"
+    ],
+    "entity_map": {
+      "product_weight_g": [
+        "weight",
+        "product weight",
+        "grams",
+        "how heavy"
+      ],
+      "volume_cm3": [
+        "volume",
+        "size",
+        "dimensions",
+        "how big"
+      ],
+      "distance_km": [
+        "distance",
+        "km",
+        "how far",
+        "shipping distance",
+        "route distance"
+      ]
+    },
+    "example_query": "A product weighing 500g, volume 8000cm\u00b3, priced at 120 BRL, shipping 300km \u2014 what is the freight cost?",
+    "ambiguous_fallback": "Are you asking me to estimate the freight / shipping cost for this product?"
+  },
+  "output_config": {
+    "return_probabilities": false,
+    "return_confidence": false,
+    "explain_output": true,
+    "units": "BRL (R$)",
+    "response_template": "The predicted freight value is R$ {predicted_value:.2f}."
+  }
+}

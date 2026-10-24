@@ -1,0 +1,298 @@
+[
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 1,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "UQE Brazilian E-Commerce\nBusiness Intelligence & Market Behaviour Report\nFocus: Revenue, Consumer Behaviour, Geography, Fulfilment & Satisfaction\n1. Executive Summary\nThis report presents a business-oriented analysis of the UQE Brazilian e-commerce dataset, covering approximately two years of marketplace activity from September 2016 through August\n2018. The dataset captures over 99,000 customer orders, representing more than BRL 15.7\nmillion in gross payment value across four payment methods."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 2,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "The platform demonstrated sustained and accelerating growth throughout the observation period, with monthly order volumes growing approximately tenfold from around 800 orders in January 2017 to over 7,200 in January 2018. Key business findings include a strong credit card preference among consumers (75.8% of transactions), a high overall customer satisfaction rate with 77% of reviewers awarding four or five stars, and significant geographic concentration of both demand and supply in the Southeast region of Brazil — particularly the state of Sao Paulo."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 3,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Operational metrics reveal a median delivery time of 10.2 days with a 97% successful delivery rate, indicating a generally reliable fulfilment operation with room for improvement in tail-end delivery cases. 2. Revenue and Payment Behaviour\nTotal payment value across all recorded transactions exceeds BRL 15.74 million. Credit card is the primary revenue driver, contributing BRL 12.42 million — nearly 78.9% of total platform revenue — across 75,388 transactions at an average order value of BRL 164.73."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 4,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Boleto bancario, a uniquely Brazilian offline payment instrument widely used by consumers without access to formal credit, generated BRL 2.87 million across 19,784 transactions. Despite its lower average ticket size (BRL 145.03), boleto represents a critical payment channel for reaching underbanked segments of the Brazilian consumer market. A particularly revealing metric is the average credit card instalment count of 3.53, compared to a single instalment for all other payment types."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 5,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Parcelamento — the Brazilian practice of splitting purchases into monthly interest-free or low-interest instalments — is a deeply embedded\nconsumer behaviour that meaningfully elevates average credit card transaction values compared to other channels. Voucher-based transactions showed the lowest average value at BRL 87.19, likely reflecting their use for smaller promotional or discount-driven purchases. Revenue Breakdown by Payment Method\n3. Platform Growth Trajectory\nMonthly order volume data reveals a compelling growth story."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 6,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "The platform's earliest recorded month (September 2016) had just three orders, with October 2016 seeing a jump to 324 — suggesting a platform launch or initial scaling phase in Q4 2016. By January 2017 the platform was processing 800 orders monthly, and by May 2017 this had grown to 3,700. Growth accelerated sharply in the second half of 2017, with volumes consistently above 4,000 from July onward."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 7,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "November 2017 marked the single largest monthly order volume in the dataset at 7,544 orders, almost certainly driven by Black Friday promotional campaigns — a retail event that has grown\ndramatically in Brazil since 2010. December 2017 remained elevated at 5,673 orders despite the post-Black Friday normalisation. The first half of 2018 established a new baseline of approximately 6,200–7,300 orders per month, representing a roughly eightfold increase over the same period in 2017 and signalling strong platform maturation. Selected Monthly Order Volumes\n4."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 8,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Consumer Satisfaction Analysis\nCustomer reviews are available for 99,223 of the 99,440 orders — a near-complete coverage rate of 99.8%, indicating that review submission is either encouraged or mandatory on this platform. The overall satisfaction profile is strongly positive: 57.78% of customers awarded the maximum five-star score, and a further 19.29% gave four stars, placing over three-quarters of all orders in the 'satisfied' category."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 9,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "The most analytically significant finding in the review data is the disproportionately high share of one-star reviews at 11.51% — making it the third most common score, ahead of both two-star (3.18%) and three-star (8.24%) reviews. This bimodal distribution — where satisfied customers overwhelmingly choose five stars while dissatisfied customers tend to give the minimum — is a well-documented pattern in e-commerce review systems."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 10,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "It suggests that the 11.51% of deeply unhappy customers represent a priority segment for customer service intervention, as they are disproportionately vocal and disproportionately likely to drive negative word-of-mouth. Delivery time and logistics failures are among the most commonly cited drivers of one-star reviews on marketplace platforms. Review Score Distribution\n5. Geographic Market Structure\nThe geographic distribution of customers and sellers reveals a highly concentrated market."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 11,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Sao Paulo state alone contributes 41,746 of the platform's 99,441 customers — a 42% market share that reflects the state's dominant position in Brazilian consumer spending. The top five states (SP, RJ, MG, RS, PR) collectively account for approximately 77% of all customers, while the remaining 22 Brazilian states share just 23% of demand. This concentration has direct implications for platform marketing strategy, logistics network investment, and seller acquisition targeting. The seller side is even more concentrated. Of the 3,095 registered sellers, 1,849 (59.7%) are based in Sao Paulo state."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 12,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "This creates an inherent structural advantage for Southeast buyers who benefit from shorter shipping distances and lower freight costs, while customers in the North and Northeast regions face both longer delivery windows and higher freight charges — a potential equity and competitiveness issue that the platform may need to address through seller acquisition in underserved regions or last-mile logistics partnerships. Customer & Seller Geographic Concentration\n6."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 13,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Fulfilment & Operational Performance\nThe platform's order fulfilment rate stands at 97.02% — with 96,477 of 99,440 orders reaching 'delivered' status. Only 0.63% of orders were cancelled, and 0.61% are marked as 'unavailable', which typically indicates a seller stock-out or listing issue discovered after order placement. Together, cancellations and unavailability affect approximately 1,234 orders, or 1.24% of the total — a rate that is broadly in line with industry norms for general merchandise marketplaces."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 14,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "For delivered orders, the average end-to-end delivery time is 12.6 days with a median of 10.2 days. The gap between mean and median indicates a right-skewed distribution — the majority of customers receive their orders within 10 days, but a meaningful tail of slower deliveries pulls the average upward. The most extreme case recorded was 209.6 days, though this is almost certainly\nan outlier related to exceptional circumstances such as address errors, customs holds, or returned-and-redelivered parcels."
+  },
+  {
+    "filename": "UQE_Ecommerce_Business_Insights_no_tables.pdf",
+    "filetype": "pdf",
+    "chunk_no": 15,
+    "total_chunks": 15,
+    "heading": "unknown",
+    "content": "Item prices range from BRL 0.85 to BRL 6,735, with an average of BRL 125.97 and a median of BRL 79.00, while average freight cost per item is BRL 20.20 — representing approximately a 16% freight-to-price ratio at median price levels. Business Insights Report — UQE Brazilian E-Commerce | Data source: Supabase (wulfgkluzrksmnpthswp)"
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 1,
+    "total_chunks": 22,
+    "heading": "unknown",
+    "content": "**UQE Brazilian E-Commerce Dataset**\nSchema Documentation, Data Quality & RAG Technical Reference\n*Audience: Data Engineers, ML Engineers & RAG System Developers | Supabase Project: wulfgkluzrksmnpthswp*"
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 2,
+    "total_chunks": 22,
+    "heading": "**1. Relational Schema & Table Descriptions**",
+    "content": "The dataset is organised into seven tables hosted in a Supabase PostgreSQL (v17.6) instance. Each table maps to a distinct entity in the e-commerce lifecycle — customers, orders, line items, payments, reviews, products, and sellers. No formal primary key constraints or foreign key relationships are enforced at the database level; referential integrity is maintained implicitly through shared identifier columns. All tables have Row Level Security (RLS) enabled. The central table is \"Order Rows\", which acts as the fact table and is joinable to all other tables."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 3,
+    "total_chunks": 22,
+    "heading": "**1. Relational Schema & Table Descriptions**",
+    "content": "\"Customer Rows\" and \"Order Item Rows\" are the two largest tables by row count, while \"Sellers Rows\" is the smallest, reflecting the marketplace model where a small seller base serves a large customer pool."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 4,
+    "total_chunks": 22,
+    "heading": "**2.1 Customer Rows**",
+    "content": "This table stores one record per customer account. Note that customer\\_id and customer\\_unique\\_id are distinct: customer\\_id is order-scoped (a returning customer placing multiple orders gets multiple customer\\_id values), while customer\\_unique\\_id persists across orders and is the true customer-level unique identifier. This distinction is critical for accurate customer lifetime value calculations."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 5,
+    "total_chunks": 22,
+    "heading": "**2.2 Order Rows**",
+    "content": "The central fact table. All timestamp columns are stored as TIMESTAMPTZ except order\\_approved\\_at, order\\_delivered\\_carrier\\_date, and order\\_delivered\\_customer\\_date, which are stored as TEXT — a schema inconsistency that requires CAST operations in SQL queries. The order\\_estimated\\_delivery\\_date and order\\_purchase\\_timestamp columns are proper TIMESTAMPTZ."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 6,
+    "total_chunks": 22,
+    "heading": "**2.3 Order Item, Payment, Review, Product & Seller Rows**",
+    "content": "Order Item Rows captures individual line items within an order. A single order can have multiple line items identified by order\\_item\\_id (sequential integer starting at 1). The price and freight\\_value columns are DOUBLE PRECISION — always ROUND() these for financial reporting to avoid floating-point representation errors. Order Payment Rows supports multi-payment orders via payment\\_sequential (e.g., a customer paying partly by voucher and partly by credit card)."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 7,
+    "total_chunks": 22,
+    "heading": "**2.3 Order Item, Payment, Review, Product & Seller Rows**",
+    "content": "Order Reviews Rows links a review to an order; review\\_comment\\_title and review\\_comment\\_message are TEXT and frequently NULL for low-scoring reviews. Product Rows stores catalogue attributes including physical dimensions (weight\\_g, length\\_cm, height\\_cm, width\\_cm), all stored as BIGINT. Product category names are in Portuguese. Sellers Rows is a simple geography lookup keyed by seller\\_id."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 8,
+    "total_chunks": 22,
+    "heading": "**3. Data Quality Assessment**",
+    "content": "A systematic review of null values, type inconsistencies, and referential gaps was conducted across all seven tables. The findings below are organised by severity to help data engineers prioritise cleaning tasks before loading data into a RAG pipeline or analytical store."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 9,
+    "total_chunks": 22,
+    "heading": "**3.1 Critical Issues**",
+    "content": "**TYPE MISMATCH:** Three delivery-related columns in Order Rows (order\\_approved\\_at, order\\_delivered\\_carrier\\_date, order\\_delivered\\_customer\\_date) are stored as TEXT instead of TIMESTAMPTZ. Any query involving delivery time calculations must include an explicit CAST, e.g.: order\\_delivered\\_customer\\_date::TIMESTAMPTZ. Failure to cast will cause silent type errors or query failures. **NO CONSTRAINTS:** No primary key, foreign key, unique, or NOT NULL constraints are enforced at the database level."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 10,
+    "total_chunks": 22,
+    "heading": "**3.1 Critical Issues**",
+    "content": "Deduplication and referential integrity validation must be performed at the application or pipeline layer before use in a RAG or ML context. **MISSING REVIEWS:** 217 orders (99,440 - 99,223) have no corresponding review record. These should be treated as review\\_score = NULL rather than excluded from satisfaction rate calculations, to avoid overstating the platform's review coverage."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 11,
+    "total_chunks": 22,
+    "heading": "**3.2 Moderate Issues**",
+    "content": "**MISSING CATEGORIES:** 610 of 32,951 product records (1.85%) have a NULL product\\_category\\_name. These products are present in Order Item Rows and contribute to revenue, but cannot be attributed to a category in product-level analysis. **CUSTOMER\\_ID DUPLICATION:** customer\\_id is NOT a unique customer identifier — it is scoped to a single order. Returning customers receive a new customer\\_id per order. Use customer\\_unique\\_id for any analysis requiring customer-level aggregation (e.g., repeat purchase rate, LTV)."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 12,
+    "total_chunks": 22,
+    "heading": "**3.2 Moderate Issues**",
+    "content": "**FLOAT PRECISION:** The price and freight\\_value columns use DOUBLE PRECISION. For financial aggregations, always apply ROUND(...::NUMERIC, 2) to avoid accumulated floating-point errors in SUM() and AVG() calculations."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 13,
+    "total_chunks": 22,
+    "heading": "**4. Statistical Distributions & Derived Metrics**",
+    "content": "Beyond basic counts, several derived metrics are useful for characterising the dataset's statistical properties. These are particularly relevant when designing embedding strategies, setting filtering thresholds, or building feature vectors for ML models trained on this data."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 14,
+    "total_chunks": 22,
+    "heading": "**4.1 Price Distribution Characteristics**",
+    "content": "Item prices exhibit a pronounced right skew. The mean price of BRL 125.97 is substantially higher than the median of BRL 79.00, confirming that a long tail of high-value products (up to BRL 6,735) inflates the average. For RAG chunking or product search scenarios, price-based bucketing should use quantile boundaries rather than equal-width bins to achieve meaningful segments. Recommended buckets: low (< BRL 50), mid (BRL 50–150), high (BRL 150–500), premium (> BRL 500)."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 15,
+    "total_chunks": 22,
+    "heading": "**4.2 Freight-to-Price Ratio**",
+    "content": "With an average item price of BRL 125.97 and average freight of BRL 20.20, the dataset-wide average freight-to-price ratio is approximately 16%. However, this ratio varies enormously by product weight and geographic distance. For the median-priced item (BRL 79.00), the freight ratio rises to approximately 25.6% at average freight cost — a significant logistics burden that likely influences both customer conversion and seller margin. This metric is highly relevant for seller performance analysis and RAG Q&A around \"which products have high shipping costs\"."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 16,
+    "total_chunks": 22,
+    "heading": "**4.3 Review Response Completeness**",
+    "content": "Of the 99,223 reviews captured, a significant proportion have NULL values in the free-text fields. review\\_comment\\_title and review\\_comment\\_message are most frequently NULL for mid-range scores (2 and 3 stars), where customers are less motivated to write. For RAG systems intending to index review text, this means the text corpus is substantially smaller than the row count suggests. Only one-star and five-star reviews have meaningfully populated text fields, creating a sentiment-skewed text corpus if review comments alone are indexed."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 17,
+    "total_chunks": 22,
+    "heading": "**5. RAG System Design Recommendations**",
+    "content": "This section provides concrete technical guidance for teams building a retrieval-augmented generation (RAG) system on top of this Supabase dataset. Recommendations cover chunking strategy, embedding unit selection, metadata filtering, and query patterns."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 18,
+    "total_chunks": 22,
+    "heading": "**5.1 Recommended Embedding Unit**",
+    "content": "The order is the natural embedding unit for this dataset. A single order-level document, constructed by joining all seven tables on order\\_id and customer\\_id, captures the complete transactional context: customer location, order status, item details, pricing, payment method, delivery timeline, and review score. This \"fat document\" approach maximises factual density per embedding and reduces the need for multi-hop retrieval across table boundaries."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 19,
+    "total_chunks": 22,
+    "heading": "**5.1 Recommended Embedding Unit**",
+    "content": "The recommended SQL join pattern for constructing order-level documents is:\nSELECT o.order\\_id, o.order\\_status, o.order\\_purchase\\_timestamp,\nc.customer\\_state, c.customer\\_city,\nSUM(oi.price) as total\\_price, SUM(oi.freight\\_value) as total\\_freight,\np.payment\\_type, p.payment\\_value, p.payment\\_installments,\nr.review\\_score, r.review\\_comment\\_message,\npr.product\\_category\\_name\nFROM \"Order Rows\" o\nJOIN \"Customer Rows\" c ON o.customer\\_id = c.customer\\_id\nJOIN \"Order Item Rows\" oi ON o.order\\_id = oi.order\\_id\nJOIN \"Order Payment Rows\" p ON o.order\\_id = p.order\\_id\nLEFT JOIN \"Order Reviews Rows\" r ON o.order\\_id = r.order\\_id\nLEFT JOIN \"Product Rows\" pr ON oi.product\\_id = pr.product\\_id\nGROUP BY o.order\\_id, c.customer\\_state, c.customer\\_city,\np.payment\\_type, p.payment\\_value, p.payment\\_installments,\nr.review\\_score, r.review\\_comment\\_message, pr.product\\_category\\_name;"
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 20,
+    "total_chunks": 22,
+    "heading": "**5.2 Metadata Fields for Filtered Retrieval**",
+    "content": "Storing structured metadata alongside embeddings enables efficient pre-filter retrieval, dramatically reducing the candidate set before semantic search. The following fields are recommended as metadata columns in a vector store:"
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 21,
+    "total_chunks": 22,
+    "heading": "**5.3 Chunking & Indexing Notes**",
+    "content": "For product-level queries (e.g., \"what categories have the highest freight costs?\"), a separate product-level embedding corpus is recommended, indexed by product\\_id with category, physical dimensions, and average price and freight from joined order item data. This avoids order-level duplication when a product appears across many orders. For review-level sentiment queries, index only reviews with non-NULL comment text, and store review\\_score as metadata for score-filtered semantic search."
+  },
+  {
+    "filename": "UQE_Ecommerce_Technical_Reference_no_tables.docx",
+    "filetype": "docx",
+    "chunk_no": 22,
+    "total_chunks": 22,
+    "heading": "**5.3 Chunking & Indexing Notes**",
+    "content": "Given the sparse text in 2- and 3-star reviews, consider augmenting those embeddings with structured fields (order status, delivery time, product category) to improve retrieval quality. *End of Technical Reference — UQE Brazilian E-Commerce Dataset*"
+  }
+]

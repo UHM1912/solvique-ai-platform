@@ -1,0 +1,37 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*service_account*.json
+*credentials*.json
+
+# Python runtime & caches
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.benchmarks/
+
+# Databases & local state
+*.db
+*.sqlite
+data/
+conversations/
+history.json
+
+# Logs
+logs/
+*.log
+
+# Editor
+.vscode/
+.idea/
+
+# Legacy and scratch files
+python_practice.ipynb
+test_visualizer.py
+flow_diagrams/
+chunks/

@@ -1,0 +1,22 @@
+<div class="chat-input-container" @slideUp>
+    <div class="composer-label"><span>ASK SOLVIQUE</span></div>
+    <div class="textarea-wrapper">
+        <textarea #textarea
+            placeholder="Ask a question about your data…"
+            [(ngModel)]="message"
+            (input)="autoResize($event)"
+            (keydown.enter)="handleEnterKey($any($event))"
+            rows="1"
+            class="chat-textarea"
+            id="chatTextarea">
+        </textarea>
+    </div>
+
+    <button class="send-btn"
+        [disabled]="isLoading || !message.trim()"
+        (click)="onSend()"
+        aria-label="Send"
+        id="sendBtn">
+        <lucide-icon [img]="Send" [size]="18"></lucide-icon>
+    </button>
+</div>

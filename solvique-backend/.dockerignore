@@ -1,0 +1,51 @@
+# Secrets & Local Environment
+.env
+.env.*
+!.env.example
+**/*.pem
+**/*.key
+**/*credentials*.json
+**/*service_account*.json
+**/*service-account*.json
+**/credentials/
+
+# Git
+.git/
+.gitignore
+
+# Python runtime artifacts
+**/__pycache__/
+*.py[cod]
+**/.venv/
+**/venv/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.benchmarks/
+
+# Database and Runtime State (Keep local state out of release image)
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/report_assets/
+**/conversations/
+history.json
+
+# Legacy / Client Specific Documents
+data/rag_sources/
+data/rag_sources/*
+
+# Logs
+**/logs/
+**/*.log
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test scripts
+tests/
+test_*.py
+python_practice.ipynb
