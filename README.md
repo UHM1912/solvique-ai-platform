@@ -14,9 +14,7 @@
 
 ### 🎬 System Overview & Demo Walkthrough
 
-<!-- Add a screen recording link or place a recording such as assets/solvique-overview.mp4 in the repository. -->
-
-> 📹 **[Add the Solvique overview recording link here](YOUR_SCREEN_RECORDING_URL)**
+![Animated preview of the Solvique application walkthrough](./assets/solvique-overview-preview.gif)
 
 ---
 

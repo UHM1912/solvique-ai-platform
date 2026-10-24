@@ -673,7 +673,7 @@ export class ChatComponent implements AfterViewChecked {
             );
 
             if (response.error) {
-                msg.visualizationError = response.error;
+                msg.visualizationError = 'I couldn’t create that visualization right now. Please try again shortly.';
                 return;
             }
 
@@ -719,7 +719,7 @@ export class ChatComponent implements AfterViewChecked {
             }
 
         } catch (error: any) {
-            msg.visualizationError = error?.message || 'Visualization failed.';
+            msg.visualizationError = 'I couldn’t create that visualization right now. The service may be temporarily unavailable. Please try again shortly.';
         } finally {
             msg.visualizationLoading = false;
         }

@@ -422,7 +422,10 @@ def _handle(llm_output: dict, user_query: str) -> dict:
         ) or []
 
     return {
-        "response": explanation,
+        # Keep the evidence table in the tool response as well as the prompt.
+        # The chat renderer extracts this markdown table and displays it below
+        # the concise natural-language explanation.
+        "response": f"{explanation}\n\n### Feature Table\n{feature_table}",
         "results": visualization_rows,
     }
 

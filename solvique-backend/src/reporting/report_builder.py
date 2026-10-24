@@ -227,7 +227,9 @@ def _deterministic_fallback_report(
             if ans.content:
                 cleaned_ans = clean(ans.content)
                 if cleaned_ans:
-                    findings.append(cleaned_ans[:300])
+                    # Preserve the complete answer in fallback reports. A hard
+                    # character slice here could end mid-word (for example, "th").
+                    findings.append(cleaned_ans)
 
         body_lines = ["Key findings:"]
         for f in findings:

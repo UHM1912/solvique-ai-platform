@@ -366,9 +366,13 @@ export class ShellComponent implements OnInit {
             }, 100);
 
         } catch (err: any) {
-            const idx = this.currentChat.messages.lastIndexOf(botMsg);
-            if (idx >= 0) this.currentChat.messages.splice(idx, 1);
-            this.toastr.error(err?.message || 'Server error. Please try again.', 'Error');
+            botMsg.text = 'I couldn’t complete that request right now. A service may be temporarily unavailable or at capacity. Please try again shortly.';
+            botMsg.rawText = botMsg.text;
+            botMsg.error = undefined;
+            botMsg.isTyping = false;
+            botMsg.renderComplete = true;
+            this.cdRef.detectChanges();
+            this.updateSidebar();
         } finally {
             if (this.currentChat) {
                 this.currentChat.isTyping = false;
@@ -444,6 +448,10 @@ export class ShellComponent implements OnInit {
 
         if (response.tool === 'rag_tool' && response.error) {
             return `I couldn't generate an answer for this retrieval request. ${response.error} Please try again.`;
+        }
+
+        if (response.tool === 'ml_tool' && response.error) {
+            return 'I couldn’t complete that prediction right now. The model service may be temporarily unavailable or at capacity. Please try again shortly.';
         }
 
         return '';
@@ -692,7 +700,7 @@ export class ShellComponent implements OnInit {
             window.open(this.chatService.getReportDownloadUrl(this.currentChat.id), '_blank', 'noopener');
             this.toastr.success('Your Solvique Executive Report (.docx) is downloading.', 'Report Export');
         } catch (err: any) {
-            this.toastr.error(err?.message || 'Failed to start report download.', 'Report Error');
+            this.toastr.error('The report couldn’t be downloaded right now. Please try again shortly.', 'Report Error');
         } finally {
             window.setTimeout(() => {
                 this.isReportLoading = false;

@@ -1,5 +1,3 @@
-from fastapi import HTTPException
-
 from graph import run_graph
 from src.conversation_store import add_message, ensure_conversation, get_recent_messages
 from src.logging_config import get_logger
@@ -20,7 +18,16 @@ def handle_chat(req: ChatRequest) -> list[ChatResponse]:
 
     add_message(conversation_id=conv_id, role="user", content=req.query)
 
-    if filter_response := run_filter(req.query):
+    try:
+        filter_response = run_filter(req.query)
+    except Exception:
+        logger.exception("Pre-filter failed; returning a graceful chat error.")
+        filter_response = None
+        pre_filter_error = True
+    else:
+        pre_filter_error = False
+
+    if filter_response:
         add_message(
             conversation_id=conv_id,
             role="assistant",
@@ -33,15 +40,29 @@ def handle_chat(req: ChatRequest) -> list[ChatResponse]:
             )
         ]
 
+    elapsed = 0.0
     try:
+        if pre_filter_error:
+            raise RuntimeError("Pre-filter service failed")
         with Timer("langgraph_agent") as timer:
             graph_result = run_graph(req.query, 1, history=history)
-    except (NonRetryableError, RetryableError) as exc:
-        raise HTTPException(
-            status_code=int(exc.error_code), detail=exc.error_message
-        ) from exc
+        elapsed = timer.elapsed
+    except (NonRetryableError, RetryableError):
+        logger.exception("Chat model retries exhausted; returning a graceful response.")
+        graph_result = {
+            "tool": "error",
+            "explanation": "I couldn’t complete that request right now. The AI service may be temporarily unavailable or at capacity. Please try again shortly.",
+            "error": "I couldn’t complete that request right now. Please try again shortly.",
+        }
+    except Exception:
+        logger.exception("Chat request failed; returning a graceful response.")
+        graph_result = {
+            "tool": "error",
+            "explanation": "I couldn’t complete that request right now. A service may be temporarily unavailable. Please try again shortly.",
+            "error": "I couldn’t complete that request right now. Please try again shortly.",
+        }
 
-    logger.info("LangGraph agent completed in %.3fs", timer.elapsed)
+    logger.info("LangGraph agent completed in %.3fs", elapsed)
 
     response_metadata = {
         "request_id": request_id,

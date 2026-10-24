@@ -47,7 +47,7 @@ def ml_tool(query: str) -> str:
             logger.error(traceback.format_exc())
             result = {
                 "status": "error",
-                "response": f"ML prediction failed: {str(e)}",
+                "response": "I couldn’t complete that prediction right now. The model service may be temporarily unavailable or at capacity. Please try again shortly.",
                 "results": [],
             }
 

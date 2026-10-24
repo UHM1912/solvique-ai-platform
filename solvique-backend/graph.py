@@ -287,12 +287,9 @@ def _extract_tool_result(tool_name: str, content: dict[str, Any]) -> dict[str, A
         if content.get("error"):
             result.update(
                 {
-                    "explanation": (
-                        "Execution of the LLM generated SQL query on the Big Query was not "
-                        "successful. Please try executing the below query in Big Query by yourself."
-                    ),
+                    "explanation": "I couldn’t complete that data query right now. The data service may be temporarily unavailable or the request may need adjustment. Please try again shortly.",
                     "sql_query": content.get("sql_query"),
-                    "error": content.get("error"),
+                    "error": "I couldn’t complete that data query right now. Please try again shortly.",
                 }
             )
         else:
@@ -314,12 +311,21 @@ def _extract_tool_result(tool_name: str, content: dict[str, Any]) -> dict[str, A
             {
                 "explanation": content.get("response"),
                 "results": content.get("results", []),
+                "error": (
+                    "I couldn’t complete that prediction right now. Please try again shortly."
+                    if content.get("status") == "error"
+                    else None
+                ),
             }
         )
         return result
 
     if tool_name == "rag_tool":
-        result.update(_extract_rag_payload(content))
+        rag_payload = _extract_rag_payload(content)
+        if rag_payload.get("error"):
+            rag_payload["answer"] = "I couldn’t retrieve an answer from the available sources right now. Please try again shortly."
+            rag_payload["error"] = "I couldn’t complete that document search right now. Please try again shortly."
+        result.update(rag_payload)
 
     return result
 

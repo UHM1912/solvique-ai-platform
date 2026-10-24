@@ -164,7 +164,7 @@ export class ReportCenterComponent implements OnInit, OnChanges {
             window.open(url, '_blank', 'noopener');
             this.toastr.success('Your Solvique Executive Report (.docx) is downloading.', 'Report Generated');
         } catch (err: any) {
-            this.toastr.error(err?.message || 'Failed to start report download.', 'Export Error');
+            this.toastr.error('The report couldn’t be downloaded right now. Please try again shortly.', 'Export Error');
         } finally {
             setTimeout(() => {
                 this.isDownloading = false;
