@@ -1,133 +1,114 @@
-# Solvique — Enterprise AI Analytics & Intelligence Platform
+# 📊 Solvique — AI Analytics & Decision Intelligence
+### *An AI-powered workspace for turning business questions into data-backed decisions*
 
-Solvique is an autonomous enterprise analytics and decision intelligence platform that translates natural language inquiries into validated BigQuery SQL queries, trains predictive forecasting and classification models, performs deep document RAG, and generates executive-ready visual reports.
-
----
-
-## Architecture Overview
-
-```
-                      ┌────────────────────────────────────────┐
-                      │          Solvique Angular UI           │
-                      │  (Studio, Reports, Assistant Views)    │
-                      └──────────────────┬─────────────────────┘
-                                         │ HTTP REST / JSON
-                                         ▼
-                      ┌────────────────────────────────────────┐
-                      │          Solvique Backend API          │
-                      │          (FastAPI on Port 8000)        │
-                      └──────────────────┬─────────────────────┘
-                                         │
-        ┌────────────────────────────────┼────────────────────────────────┐
-        ▼                                ▼                                ▼
-┌─────────────────┐            ┌──────────────────┐             ┌──────────────────┐
-│   LangGraph     │            │    BigQuery      │             │     Prophet /    │
-│ Intent Routing  │            │  Analytics DB    │             │   Scikit-Learn   │
-│ (Gemini 2.5/3)  │            │(solvique-personal)             │    ML Engine     │
-└─────────────────┘            └──────────────────┘             └──────────────────┘
-```
+[![Live Application](https://img.shields.io/badge/Demo-Live%20Application-brightgreen?style=for-the-badge&logo=googlecloud)](https://solvique-frontend-65499697760.asia-south1.run.app/)
+[![Angular 19](https://img.shields.io/badge/Frontend-Angular%2019-DD0031?style=for-the-badge&logo=angular)](https://angular.dev/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![BigQuery](https://img.shields.io/badge/Data-BigQuery-4285F4?style=for-the-badge&logo=googlebigquery)](https://cloud.google.com/bigquery)
 
 ---
 
-## Directory Structure
+## 🌐 Live Application & Video Walkthrough
 
+> ### 🚀 **[Open the Solvique application](https://solvique-frontend-65499697760.asia-south1.run.app/)**
+
+### 🎬 System Overview & Demo Walkthrough
+
+<!-- Add a screen recording link or place a recording such as assets/solvique-overview.mp4 in the repository. -->
+
+> 📹 **[Add the Solvique overview recording link here](YOUR_SCREEN_RECORDING_URL)**
+
+---
+
+## 🎯 1. Project Goal & Business Value
+
+### The Challenge
+
+Business data is often difficult to explore without SQL skills, specialist tools, or support from an analytics team. Relevant context may also live in documents, while forecasts and findings are produced in separate workflows. This makes it harder for teams to move from a business question to a clear, shareable decision.
+
+### The Solution
+
+Solvique brings conversational analytics, document search, predictive modeling, interactive data exploration, and report creation into one workspace. Users can ask a question in natural language, inspect the resulting analysis, and share key findings through an executive-ready report.
+
+---
+
+## 🏛️ 2. Key System Capabilities
+
+- **Conversational analytics**: Ask business questions in natural language and receive answers grounded in analytical results.
+- **BigQuery data exploration**: Generate and execute SQL queries against connected business data.
+- **Forecasting and machine learning**: Request forecasts and classification insights using available models.
+- **Document search**: Retrieve relevant context from reference documents using retrieval-augmented generation (RAG).
+- **Interactive Data Studio**: Inspect result tables, explore charts, refine visualizations, and export data.
+- **Executive reporting**: Preview analysis as a structured report with summaries, tables, and visualizations; export it as a Word document.
+- **Conversation history**: Revisit and continue previous analyses.
+
+---
+
+## 🧭 3. Product Workspaces
+
+| Workspace | Purpose |
+| :--- | :--- |
+| **Assistant** | Start an analysis, query business data, ask for a forecast, or search reference documents. |
+| **Data Studio** | Explore returned datasets through tables and interactive visualizations, then export results. |
+| **Report Center** | Review findings in a report layout and export the analysis for sharing. |
+
+---
+
+## ⚙️ 4. Application Architecture
+
+```text
+┌─────────────────────────────────────┐
+│       Angular 19 Web Application    │
+│ Assistant · Data Studio · Reports   │
+└──────────────────┬──────────────────┘
+                   │ REST API
+                   ▼
+┌─────────────────────────────────────┐
+│          FastAPI Backend            │
+│ AI workflows · analytics · reports  │
+└─────────┬──────────┬──────────┬─────┘
+          │          │          │
+          ▼          ▼          ▼
+      BigQuery   ML models   Document search
+                             & reporting tools
 ```
-.
-├── UQE_BACKEND/                    # FastAPI Analytics Engine & LangGraph Agent
-│   ├── api.py                      # FastAPI application definition and REST endpoints
-│   ├── config.py                   # Central configuration (anchored absolute paths)
-│   ├── graph.py                    # LangGraph multi-agent workflow definition
-│   ├── main.py                     # Local development entry point (uvicorn)
-│   ├── pyproject.toml              # Python project metadata (solvique-backend)
-│   ├── Dockerfile                  # Production container definition for Cloud Run
-│   ├── .dockerignore               # Container packaging exclusion rules
-│   ├── .env.example                # Sanitized environment template
-│   ├── data/                       # Application state, schemas, and assets
-│   │   ├── schema.sql              # DDL for 8 Olist e-commerce BigQuery tables
-│   │   ├── seed_data.sql           # Initial dataset verification seed records
-│   │   ├── sql_rag_sources/        # Domain reference documents
-│   │   ├── rag_sources/            # Client reference documents (excluded from releases)
-│   │   └── solvique_conversations.db # Local conversation store (excluded from releases)
-│   ├── src/                        # Modular source code
-│   │   ├── logging_config/         # Standardized structured logging
-│   │   ├── ml_tool_utils/          # Predictive modeling & registry
-│   │   ├── rag_tool_utils/         # FAISS vector store & document chunking
-│   │   ├── reporting/              # Document generator (.docx export)
-│   │   ├── schemas/                # Pydantic request/response models
-│   │   ├── services/               # Chat, conversation, and visualizer services
-│   │   ├── sql_tool_utils/         # BigQuery SQL execution & schema embeddings
-│   │   ├── tools/                  # Tool definitions for LangGraph
-│   │   └── visualization_tool/     # Plotly interactive charting engine
-│   └── tests/                      # Unit and integration test suites
+
+The Angular frontend provides the application experience and communicates with the FastAPI backend over a REST API. The backend coordinates query generation and execution, AI workflows, model inference, document retrieval, visualization, and report generation.
+
+---
+
+## 📂 5. Repository Structure
+
+```text
+solvique/
+├── solvique-frontend/             # Angular web application
+│   └── src/app/
+│       ├── core/                  # Shared application services
+│       ├── features/chat/         # Assistant, Data Studio, and Report Center
+│       └── shared/                # Shared interfaces and components
 │
-├── solvique-frontend/               # Angular 19 Enterprise Web Interface
-│   ├── src/                        # Angular source components, services, and styles
-│   ├── package.json                # Frontend dependencies and build scripts
-│   ├── Dockerfile                  # Multi-stage production container (Nginx)
-│   └── nginx.conf.template         # Nginx SPA routing and Cloud Run port configuration
+├── solvique-backend/              # FastAPI analytics API
+│   ├── api.py                     # API application and routes
+│   ├── graph.py                   # AI workflow orchestration
+│   └── src/
+│       ├── ml_tool_utils/         # Forecasting and model inference
+│       ├── rag_tool_utils/        # Document retrieval utilities
+│       ├── reporting/             # Report generation
+│       ├── services/              # Application services
+│       ├── sql_tool_utils/        # SQL and data query utilities
+│       ├── tools/                 # AI workflow tools
+│       └── visualization_tool/    # Interactive chart generation
 │
-├── deploy/                         # Cloud Deployment Automation
-│   ├── deploy_cloud_run.sh         # Backend deployment script (Linux / macOS / Cloud Shell)
-│   ├── deploy_cloud_run.bat        # Backend deployment script (Windows Batch)
-│   ├── deploy_frontend.sh          # Frontend deployment script (Linux / macOS / Cloud Shell)
-│   └── deploy_frontend.bat         # Frontend deployment script (Windows Batch)
-│
-└── .gitignore                      # Workspace-level Git security rules
+└── README.md                      # Project overview
 ```
 
 ---
 
-## Google Cloud Platform Configuration
+## 👨‍💻 6. Project Summary
 
-- **Project ID**: `solvique-personal`
-- **Location**: `US`
-- **Dataset**: `ecommerce` (Brazilian Olist e-commerce dataset: `orders`, `customers`, `products`, `sellers`, `order_items`, `order_payments`, `order_reviews`, `geolocation`)
-- **Runtime Service Account**: `solvique-backend-sa@solvique-personal.iam.gserviceaccount.com`
-  - **Project-Level Role**: `roles/bigquery.jobUser` (Required for running query jobs)
-  - **Dataset-Level Role**: `READER` on `solvique-personal:ecommerce` (Scoped least-privilege data access; no broad project `dataViewer`)
-
----
-
-## Cloud Run & Data Persistence Considerations
-
-> [!NOTE]
-> Cloud Run instances use an ephemeral in-memory filesystem. Any data written to `/app/data/solvique_conversations.db` or `/app/data/report_assets/` inside a container instance is lost when the instance restarts or scales down. Existing local `uqe_conversations.db` files remain supported and are used when the new database filename is absent.
->
-> **For Production Cloud Run Deployments:**
-> 1. **Option A (Cloud Storage FUSE Mount)**: Mount a Cloud Storage bucket directly to `/app/data` in Cloud Run.
-> 2. **Option B (Managed Database)**: Migrate the conversation store to Cloud SQL (PostgreSQL) or Cloud Firestore.
-
----
-
-## Full Olist Dataset Import Instructions
-
-To load the full ~100k row Olist Kaggle dataset into BigQuery without downloading via code:
-1. Download the public dataset from [Kaggle Olist E-Commerce Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
-2. Extract the CSV files to a local directory.
-3. Run the following `bq load` commands targeting `solvique-personal:ecommerce`:
-
-```bash
-# Orders
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.orders olist_orders_dataset.csv
-
-# Customers
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.customers olist_customers_dataset.csv
-
-# Products
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.products olist_products_dataset.csv
-
-# Sellers
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.sellers olist_sellers_dataset.csv
-
-# Order Items
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.order_items olist_order_items_dataset.csv
-
-# Payments
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.order_payments olist_order_payments_dataset.csv
-
-# Reviews
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.order_reviews olist_order_reviews_dataset.csv
-
-# Geolocation
-bq load --source_format=CSV --skip_leading_rows=1 solvique-personal:ecommerce.geolocation olist_geolocation_dataset.csv
-```
+- **Product**: AI-powered analytics and decision intelligence workspace
+- **Frontend**: Angular 19
+- **Backend**: FastAPI and Python
+- **Data analytics**: BigQuery
+- **AI capabilities**: Natural-language workflows, document retrieval, and machine-learning inference
+- **Application**: [solvique-frontend-65499697760.asia-south1.run.app](https://solvique-frontend-65499697760.asia-south1.run.app/)
